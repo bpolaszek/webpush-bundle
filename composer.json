@@ -1,0 +1,38 @@
+{
+  "name": "bentools/webpush-bundle",
+  "description": "Symfony Bundle: Associate your users to webpush subscriptions.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Beno!t POLASZEK",
+      "email": "bpolaszek@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "bentools/helpfultraits": "^1.0",
+    "minishlink/web-push": "^2.0",
+    "symfony/symfony": "^2.7|^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "BenTools\\WebPushBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "files": [
+      "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php"
+    ]
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^3.3"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  }
+}
