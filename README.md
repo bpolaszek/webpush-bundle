@@ -24,9 +24,11 @@ Because there can be different User implementations, and that some front-end is 
 
 Let's go!
 
-PHP7.1+ is required.
+-------------
 
 ### Composer is your friend:
+
+PHP7.1+ is required.
 
 ```bash
 composer require bentools/webpush-bundle 1.0.x-dev
@@ -195,21 +197,6 @@ class UserDevice implements UserDeviceInterface
         return $this->subscription['keys']['auth'] ?? null;
     }
 
-    /**
-     * @return array
-     */
-    public function getSubscription(): ?array
-    {
-        return $this->subscription;
-    }
-
-    /**
-     * @param array $subscription
-     */
-    public function setSubscription(array $subscription)
-    {
-        $this->subscription = $subscription;
-    }
 }
 ```
 
@@ -314,7 +301,6 @@ bentools_webpush:
 #### Update your router:
 ```yaml
 # app/config/routing.yml
-
 bentools_webpush:
     resource: '@WebPushBundle/Resources/config/routing.xml'
     prefix: /webpush
@@ -385,7 +371,7 @@ class NotificationSender implements ContainerAwareInterface
             'body'  => 'Symfony is great!',
             'icon'  => 'https://symfony.com/logos/symfony_black_03.png',
             'data'  => [
-                'link' => 'https://github.com/bpolaszek/webpush-bundle',
+                'link' => 'https://www.symfony.com',
             ],
         ]);
     }
