@@ -34,6 +34,15 @@ final class WebPushGenerateKeysCommand extends ContainerAwareCommand
         $io->writeln('Store them in your <info>app/config/parameters.yml</info>:');
         $io->newLine(1);
         $io->writeln(<<<EOF
+<info># app/config/parameters.yml.dist</info>
+parameters:    
+    bentools_webpush.public_key: ~
+    bentools_webpush.private_key: ~        
+EOF
+        );
+
+        $io->newLine(1);
+        $io->writeln(<<<EOF
 <info># app/config/parameters.yml</info>
 parameters:    
     bentools_webpush.public_key: '{$keys['publicKey']}'
