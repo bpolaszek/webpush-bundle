@@ -33,7 +33,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('user_class')
                         ->isRequired()
                         ->end()
-                        ->scalarNode('device_class')
+                        ->scalarNode('user_subscription_class')
                         ->isRequired()
                         ->end()
                         ->scalarNode('manager')

@@ -29,39 +29,39 @@ final class SubscriptionAction
         TokenStorageInterface $tokenStorage,
         WebPushManagerRegistry $registry
     ) {
-    
+
         $this->tokenStorage = $tokenStorage;
         $this->registry = $registry;
     }
 
     /**
      * @param UserInterface $user
-     * @param string        $deviceHash
+     * @param string        $subscriptionHash
      * @param array         $subscription
      * @throws \RuntimeException
      */
-    private function processSubscription(UserInterface $user, string $deviceHash, array $subscription)
+    private function processSubscription(UserInterface $user, string $subscriptionHash, array $subscription)
     {
-        $manager = $this->registry->getManagerFor($user);
-        $device = $manager->getUserDevice($user, $deviceHash)
-        or $device = $manager->factory($user, $deviceHash, $subscription);
-        $manager->save($device);
+        $manager = $this->registry->getManager($user);
+        $userSubscription = $manager->getUserSubscription($user, $subscriptionHash)
+        or $userSubscription = $manager->factory($user, $subscriptionHash, $subscription);
+        $manager->save($userSubscription);
     }
 
     /**
      * @param UserInterface $user
-     * @param string        $deviceHash
+     * @param string        $subscriptionHash
      * @throws BadRequestHttpException
      * @throws \RuntimeException
      */
-    private function processUnsubscription(UserInterface $user, string $deviceHash)
+    private function processUnsubscription(UserInterface $user, string $subscriptionHash)
     {
-        $manager = $this->registry->getManagerFor($user);
-        $device = $manager->getUserDevice($user, $deviceHash);
-        if (null === $device) {
-            throw new BadRequestHttpException("Device hash not found");
+        $manager = $this->registry->getManager($user);
+        $subscription = $manager->getUserSubscription($user, $subscriptionHash);
+        if (null === $subscription) {
+            throw new BadRequestHttpException("Subscription hash not found");
         }
-        $manager->delete($device);
+        $manager->delete($subscription);
     }
 
     /**
@@ -85,24 +85,23 @@ final class SubscriptionAction
             throw new BadRequestHttpException("User is not logged in.");
         }
 
-        $data = json_decode($request->getContent(), true);
+        $subscription = json_decode($request->getContent(), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new BadRequestHttpException(json_last_error_msg());
         }
 
-        if (!isset($data['deviceHash'])) {
-            throw new BadRequestHttpException('deviceHash has not been provided.');
+        if (!isset($subscription['endpoint'])) {
+            throw new BadRequestHttpException('Invalid subscription object.');
         }
 
-        if ('POST' === $request->getMethod() && !isset($data['subscription'])) {
-            throw new BadRequestHttpException('subscription has not been provided.');
-        }
+        $manager = $this->registry->getManager($user);
+        $subscriptionHash = $manager->hash($subscription['endpoint']);
 
         if ('DELETE' === $request->getMethod()) {
-            $this->processUnsubscription($user, $data['deviceHash']);
+            $this->processUnsubscription($user, $subscriptionHash);
         } else {
-            $this->processSubscription($user, $data['deviceHash'], $data['subscription']);
+            $this->processSubscription($user, $subscriptionHash, $subscription);
         }
 
         return new Response('', Response::HTTP_NO_CONTENT);

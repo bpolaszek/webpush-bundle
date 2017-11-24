@@ -2,8 +2,8 @@
 
 namespace BenTools\WebPushBundle\Registry;
 
-use BenTools\WebPushBundle\Model\Device\UserDeviceInterface;
-use BenTools\WebPushBundle\Model\Device\UserDeviceManagerInterface;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -40,8 +40,8 @@ final class WebPushManagerRegistry implements ContainerAwareInterface
         if (!is_a($values['user_class'], UserInterface::class, true)) {
             throw new RuntimeException(sprintf('User class %s must implement %s', $values['user_class'], UserInterface::class));
         }
-        if (!is_a($values['device_class'], UserDeviceInterface::class, true)) {
-            throw new RuntimeException(sprintf('User device class %s must implement %s', $values['device_class'], UserDeviceInterface::class));
+        if (!is_a($values['user_subscription_class'], UserSubscriptionInterface::class, true)) {
+            throw new RuntimeException(sprintf('User subscription class %s must implement %s', $values['user_subscription_class'], UserSubscriptionInterface::class));
         }
         if (!$this->container->has(ltrim($values['manager'], '@'))) {
             throw new ServiceNotFoundException(sprintf('Service %s not found - or make sure it is public.', $values['manager']));
@@ -50,17 +50,31 @@ final class WebPushManagerRegistry implements ContainerAwareInterface
     }
 
     /**
-     * @param UserInterface $user
-     * @return UserDeviceManagerInterface
+     * @param UserInterface|string $userClass
+     * @return UserSubscriptionManagerInterface
      * @throws RuntimeException
      */
-    public function getManagerFor(UserInterface $user): UserDeviceManagerInterface
+    public function getManager($userClass): UserSubscriptionManagerInterface
     {
+        if (!is_a($userClass, UserInterface::class, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Expected class or object that implements %s, %s given',
+                    UserInterface::class,
+                    is_object($userClass) ? get_class($userClass) : gettype($userClass)
+                )
+            );
+        }
+
+        if (is_object($userClass)) {
+            $userClass = get_class($userClass);
+        }
+
         foreach ($this->associations as $association) {
-            if ($association['user_class'] === get_class($user)) {
+            if ($association['user_class'] === $userClass) {
                 $service = $this->container->get(ltrim($association['manager'], '@'));
-                if (!$service instanceof UserDeviceManagerInterface) {
-                    throw new RuntimeException(sprintf('Service %s must implement %s', $association['manager'], UserDeviceManagerInterface::class));
+                if (!$service instanceof UserSubscriptionManagerInterface) {
+                    throw new RuntimeException(sprintf('Service %s must implement %s', $association['manager'], UserSubscriptionManagerInterface::class));
                 }
                 return $service;
             }

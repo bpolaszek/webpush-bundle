@@ -18,7 +18,7 @@ We assume you have a minimum knowledge of how Push Notifications work, otherwise
 
 Because there can be different User implementations, and that some front-end is implied, there are several steps to follow to get started:
 1. Install the bundle and its assets
-2. Create your own `UserDevice` class and its associated manager
+2. Create your own `UserSubscription` class and its associated manager
 3. Update your `config.yml` and `routing.yml`
 4. Insert a JS snippet in your twig views.
 
@@ -31,7 +31,7 @@ Let's go!
 PHP7.1+ is required.
 
 ```bash
-composer require bentools/webpush-bundle 1.0.x-dev
+composer require bentools/webpush-bundle 0.2.*
 ```
 
 _We aren't on stable version yet - expect some changes._
@@ -81,29 +81,34 @@ php bin/console webpush:generate:keys
 
 ### Let's do some code
 
-#### Create your UserDevice class
+Basically, a user can have several subscriptions (you can log in from several browsers), and a single subscription can be shared among multiple users (you can log in with several accounts on the same browser).
 
-First, you have to implement `BenTools\WebPushBundle\Model\Device\UserDeviceInterface`. 
+We need to store these associations.
 
-It's an entity which associates:
+#### Create your UserSubscription class
+
+First, you have to implement `BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface`. 
+
+It's a simple entity which associates:
 1. Your user entity
-2. A device hash (i.e. a browser fingerprint) - our JS lib provides it
-3. The subscription details - it will store the JSON representation of the `Subscription` javascript object.
+2. The subscription details - it will store the JSON representation of the `Subscription` javascript object.
+
+You're free to use Doctrine or anything else.
 
 Example class:
 ```php
-# src/AppBundle/Entity/UserDevice.php
+# src/AppBundle/Entity/UserSubscription.php
 
 namespace AppBundle\Entity;
 
-use BenTools\WebPushBundle\Model\Device\UserDeviceInterface;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity()
  */
-class UserDevice implements UserDeviceInterface
+class UserSubscription implements UserSubscriptionInterface
 {
 
     /**
@@ -127,7 +132,7 @@ class UserDevice implements UserDeviceInterface
      *
      * @ORM\Column(type="string")
      */
-    private $deviceHash;
+    private $subscriptionHash;
 
     /**
      * @var array
@@ -137,15 +142,15 @@ class UserDevice implements UserDeviceInterface
     private $subscription;
 
     /**
-     * UserDevice constructor.
+     * UserSubscription constructor.
      * @param User   $user
-     * @param string $deviceHash
+     * @param string $subscriptionHash
      * @param array  $subscription
      */
-    public function __construct(User $user, string $deviceHash, array $subscription)
+    public function __construct(User $user, string $subscriptionHash, array $subscription)
     {
         $this->user = $user;
-        $this->deviceHash = $deviceHash;
+        $this->subscriptionHash = $subscriptionHash;
         $this->subscription = $subscription;
     }
 
@@ -168,9 +173,9 @@ class UserDevice implements UserDeviceInterface
     /**
      * @inheritDoc
      */
-    public function getDeviceHash(): string
+    public function getSubscriptionHash(): string
     {
-        return $this->deviceHash;
+        return $this->subscriptionHash;
     }
 
     /**
@@ -201,23 +206,23 @@ class UserDevice implements UserDeviceInterface
 ```
 
 
-#### Create your UserDevice manager
+#### Create your UserSubscription manager
 
-Then, create a class that implements `BenTools\WebPushBundle\Model\Device\UserDeviceManagerInterface` with your own logic.
+Then, create a class that implements `BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface` with your own logic.
 
 Example:
 ```php
-# src/AppBundle/Services/UserDeviceManager.php
+# src/AppBundle/Services/UserSubscriptionManager.php
 
 namespace AppBundle\Services;
 
-use AppBundle\Entity\UserDevice;
-use BenTools\WebPushBundle\Model\Device\UserDeviceInterface;
-use BenTools\WebPushBundle\Model\Device\UserDeviceManagerInterface;
+use AppBundle\Entity\UserSubscription;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class UserDeviceManager implements UserDeviceManagerInterface
+class UserSubscriptionManager implements UserSubscriptionManagerInterface
 {
     /**
      * @var ManagerRegistry
@@ -225,7 +230,7 @@ class UserDeviceManager implements UserDeviceManagerInterface
     private $doctrine;
 
     /**
-     * UserDeviceManager constructor.
+     * UserSubscriptionManager constructor.
      * @param ManagerRegistry $doctrine
      */
     public function __construct(ManagerRegistry $doctrine)
@@ -236,28 +241,35 @@ class UserDeviceManager implements UserDeviceManagerInterface
     /**
      * @inheritDoc
      */
-    public function factory(UserInterface $user, string $deviceHash, array $subscription): UserDeviceInterface
+    public function factory(UserInterface $user, string $subscriptionHash, array $subscription): UserSubscriptionInterface
     {
-        return new UserDevice($user, $deviceHash, $subscription);
+        return new UserSubscription($user, $subscriptionHash, $subscription);
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public function hash(string $endpoint): string {
+        return md5($endpoint);    
     }
 
     /**
      * @inheritDoc
      */
-    public function getUserDevice(UserInterface $user, string $deviceHash): ?UserDeviceInterface
+    public function getUserSubscription(UserInterface $user, string $subscriptionHash): ?UserSubscriptionInterface
     {
-        return $this->doctrine->getManager()->getRepository(UserDevice::class)->findOneBy([
+        return $this->doctrine->getManager()->getRepository(UserSubscription::class)->findOneBy([
             'user' => $user,
-            'deviceHash' => $deviceHash,
+            'subscriptionHash' => $subscriptionHash,
         ]);
     }
 
     /**
      * @inheritDoc
      */
-    public function getUserDevices(UserInterface $user): iterable
+    public function findByUser(UserInterface $user): iterable
     {
-        return $this->doctrine->getManager()->getRepository(UserDevice::class)->findBy([
+        return $this->doctrine->getManager()->getRepository(UserSubscription::class)->findBy([
             'user' => $user,
         ]);
     }
@@ -265,18 +277,28 @@ class UserDeviceManager implements UserDeviceManagerInterface
     /**
      * @inheritDoc
      */
-    public function save(UserDeviceInterface $userDevice): void
+    public function findByHash(string $subscriptionHash): iterable
     {
-        $this->doctrine->getManager()->persist($userDevice);
+        return $this->doctrine->getManager()->getRepository(UserSubscription::class)->findBy([
+            'subscriptionHash' => $subscriptionHash,
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function save(UserSubscriptionInterface $userSubscription): void
+    {
+        $this->doctrine->getManager()->persist($userSubscription);
         $this->doctrine->getManager()->flush();
     }
 
     /**
      * @inheritDoc
      */
-    public function delete(UserDeviceInterface $userDevice): void
+    public function delete(UserSubscriptionInterface $userSubscription): void
     {
-        $this->doctrine->getManager()->remove($userDevice);
+        $this->doctrine->getManager()->remove($userSubscription);
         $this->doctrine->getManager()->flush();
     }
 
@@ -294,8 +316,8 @@ bentools_webpush:
     associations:
         my_users:
             user_class: AppBundle\Entity\User
-            device_class: AppBundle\Entity\UserDevice
-            manager: '@AppBundle\Services\UserDeviceManager' # Manager service id
+            user_subscription_class: AppBundle\Entity\UserSubscription
+            manager: '@AppBundle\Services\UserSubscriptionManager' # Manager service id
 ```
 
 #### Update your router:
@@ -313,7 +335,7 @@ Insert this snippet in the templates where your user is logged in:
 ```twig
 <script src="{{ asset('bundles/webpush/js/webpush_client.js') }}"></script>
 <script>
-    var push = new BenToolsWebPushClient({
+    var webpush = new BenToolsWebPushClient({
         serverKey: '{{ bentools_pusher.server_key | e('js') }}',
         url: '{{ path('bentools_webpush.subscription') }}'
     });
@@ -349,13 +371,13 @@ class NotificationSender implements ContainerAwareInterface
     {
         $sender = $this->container->get(WebPush::class);
         $managers = $this->container->get(WebPushManagerRegistry::class);
-        $myUserManager = $managers->getManagerFor($user);
-        foreach ($myUserManager->getUserDevices($user) as $device) {
+        $myUserManager = $managers->getManager($user);
+        foreach ($myUserManager->findByUser($user) as $subscription) {
             $sender->sendNotification(
-                $device->getEndpoint(),
+                $subscription->getEndpoint(),
                 $this->createAwesomeNotification(),
-                $device->getPublicKey(),
-                $device->getAuthToken()
+                $subscription->getPublicKey(),
+                $subscription->getAuthToken()
             );
         }
         $sender->flush();
@@ -400,12 +422,12 @@ bentools_webpush:
     associations:
         employees:
             user_class: AppBundle\Entity\Employee
-            device_class: AppBundle\Entity\EmployeeDevice
-            manager: '@AppBundle\Services\EmployeeDeviceManager' 
+            user_subscription_class: AppBundle\Entity\EmployeeSubscription
+            manager: '@AppBundle\Services\EmployeeSubscriptionManager' 
         customers:
             user_class: AppBundle\Entity\Customer
-            device_class: AppBundle\Entity\CustomerDevice
-            manager: '@AppBundle\Services\CustomerDeviceManager' 
+            user_subscription_class: AppBundle\Entity\CustomerSubscription
+            manager: '@AppBundle\Services\CustomerSubscriptionManager' 
 ```
 
 
@@ -414,6 +436,53 @@ bentools_webpush:
 Of course. You send a notification to a user, it will be dispatched among the different browsers they subscribed.
 
 You can control subscriptions on the client-side.
+
+**How do I manage subscriptions / unsubscriptions from an UI point of view?**
+
+```twig
+<script>
+    var webpush = new BenToolsWebPushClient({
+        serverKey: '{{ bentools_pusher.server_key | e('js') }}', // Required parameter
+        url: '{{ path('bentools_webpush.subscription') }}', // Required parameter
+        promptIfNotSubscribed: false // Defaults true - setting this to false will disable automatic prompt
+    });
+    
+    webpush.subscribe(); // Prompts the user to allow notifications, then registers the user / subscription on the server.
+    webpush.unsubscribe(); // Unregisters the user / subscription association on the server.
+    webpush.revoke(); // Invalidates the active subscription, and unregisters the user / subscription association on the server.
+    webpush.getNotificationPermissionState(); // granted / prompt / denied
+    webpush.askPermission(); // Prompts the user to allow or deny notifications.
+</script>
+```
+
+**How do I handle expired subscriptions?**
+
+When you push a notification, you can know which recipients have expired.
+
+The hash of a subscription object is just an MD5 of the HTTP endpoint.
+
+```php
+foreach ($manager->findByUser($user) as $subscription) {
+    $webpush->sendNotification(
+        $subscription->getEndpoint(),
+        'ho hi',
+        $subscription->getPublicKey(),
+        $subscription->getAuthToken()
+    );
+}
+
+$results = $webpush->flush();
+
+if (is_array($results)) {
+    foreach ($results as $result) {
+        if (!empty($result['expired'])) {
+            foreach ($manager->findByHash($manager->hash($result['endpoint'])) as $subscription) {
+                $manager->delete($subscription);
+            }
+        }
+    }
+}
+```
 
 ## Tests
 

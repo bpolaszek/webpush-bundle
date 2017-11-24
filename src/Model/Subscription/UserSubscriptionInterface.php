@@ -1,25 +1,25 @@
 <?php
 
-namespace BenTools\WebPushBundle\Model\Device;
+namespace BenTools\WebPushBundle\Model\Subscription;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-interface UserDeviceInterface
+interface UserSubscriptionInterface
 {
 
     /**
-     * Return the user associated to this device.
+     * Return the user associated to this subscription.
      *
      * @return UserInterface
      */
     public function getUser(): UserInterface;
 
     /**
-     * Return the hash of this device. Can be a fingerprint or a cookie.
+     * Return the hash of this subscription. Can be a fingerprint or a cookie.
      *
      * @return string
      */
-    public function getDeviceHash(): string;
+    public function getSubscriptionHash(): string;
 
     /**
      * Return the subscriber's HTTP endpoint.
