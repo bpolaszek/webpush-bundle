@@ -31,7 +31,7 @@ Let's go!
 PHP7.1+ is required.
 
 ```bash
-composer require bentools/webpush-bundle 0.2.*
+composer require bentools/webpush-bundle 0.3.*
 ```
 
 _We aren't on stable version yet - expect some changes._
