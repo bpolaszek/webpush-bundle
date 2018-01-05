@@ -92,6 +92,7 @@ First, you have to implement `BenTools\WebPushBundle\Model\Subscription\UserSubs
 It's a simple entity which associates:
 1. Your user entity
 2. The subscription details - it will store the JSON representation of the `Subscription` javascript object.
+3. A hash of the endpoint (or any string that could help in retrieving it).
 
 You're free to use Doctrine or anything else.
 
@@ -250,7 +251,7 @@ class UserSubscriptionManager implements UserSubscriptionManagerInterface
      * @inheritDoc
      */
     public function hash(string $endpoint): string {
-        return md5($endpoint);    
+        return md5($endpoint); // Encode it as you like    
     }
 
     /**
@@ -333,7 +334,7 @@ bentools_webpush:
 Insert this snippet in the templates where your user is logged in:
 
 ```twig
-<script src="{{ asset('bundles/webpush/js/webpush_client.js') }}"></script>
+<script src="{{ asset('bundles/webpush/js/webpush_client.js') }}" data-webpushclient></script>
 <script>
     var webpush = new BenToolsWebPushClient({
         serverKey: '{{ bentools_pusher.server_key | e('js') }}',
@@ -457,9 +458,8 @@ You can control subscriptions on the client-side.
 
 **How do I handle expired subscriptions?**
 
-When you push a notification, you can know which recipients have expired.
-
-The hash of a subscription object is just an MD5 of the HTTP endpoint.
+When you push a notification, you can know which endpoints failed.
+After pushing, you can retrieve the corresponding recipients and manage their deletion, for instance with Doctrine:
 
 ```php
 foreach ($manager->findByUser($user) as $subscription) {

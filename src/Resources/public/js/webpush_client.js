@@ -1,4 +1,8 @@
-var thisScript = document.getElementsByTagName('script')[document.getElementsByTagName('script').length - 1];
+var thisScript = document.querySelector('script[data-webpushclient]');
+if (null === thisScript) {
+    console.log('Do not forget to add "data-webpushclient", i.e. <script src="webpush_client.js" data-webpushclient></script>');
+    throw Error("Cannot find where webpush_client.js is.");
+}
 var BenToolsWebPushClient = function BenToolsWebPushClient(options) {
 
     return {
