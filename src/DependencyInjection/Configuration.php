@@ -28,7 +28,7 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('associations')
                 ->useAttributeAsKey('name')
-                ->arrayPrototype()
+                ->prototype('array')
                     ->children()
                         ->scalarNode('user_class')
                         ->isRequired()

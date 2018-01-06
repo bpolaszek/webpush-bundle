@@ -33,7 +33,7 @@
             </argument>
         </service>
 
-        <service class="BenTools\WebPushBundle\Action\SubscriptionAction" id="BenTools\WebPushBundle\Action\SubscriptionAction" public="false">
+        <service class="BenTools\WebPushBundle\Action\SubscriptionAction" id="BenTools\WebPushBundle\Action\SubscriptionAction" public="true">
             <argument id="security.token_storage" type="service"/>
             <argument id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" type="service"/>
             <tag name="controller.service_arguments"/>
