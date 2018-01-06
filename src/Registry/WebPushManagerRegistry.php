@@ -67,7 +67,8 @@ final class WebPushManagerRegistry implements ContainerAwareInterface
         }
 
         if (is_object($userClass)) {
-            $userClass = get_class($userClass);
+            $em = $this->container->get('doctrine')->getEntityManager();
+            $userClass = $em->getMetadataFactory()->getMetadataFor(get_class($userClass))->getName();
         }
 
         foreach ($this->associations as $association) {
