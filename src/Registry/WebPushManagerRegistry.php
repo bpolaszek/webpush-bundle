@@ -4,6 +4,7 @@ namespace BenTools\WebPushBundle\Registry;
 
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface;
+use Doctrine\Common\Util\ClassUtils;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -81,6 +82,11 @@ final class WebPushManagerRegistry implements ContainerAwareInterface
                 }
                 return $service;
             }
+        }
+
+        // Case of a doctrine proxied class
+        if (0 === strpos($userClass, 'Proxies\__CG__') && class_exists('Doctrine\Common\Util\ClassUtils')) {
+            return $this->getManager(ClassUtils::getRealClass($userClass));
         }
 
         throw new \InvalidArgumentException(sprintf('Webpush service not found for class %s', $userClass));
