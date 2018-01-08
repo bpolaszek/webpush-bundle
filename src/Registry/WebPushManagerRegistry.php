@@ -53,6 +53,9 @@ final class WebPushManagerRegistry implements ContainerAwareInterface
      * @param UserInterface|string $userClass
      * @return UserSubscriptionManagerInterface
      * @throws RuntimeException
+     * @throws ServiceNotFoundException
+     * @throws \InvalidArgumentException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      */
     public function getManager($userClass): UserSubscriptionManagerInterface
     {
@@ -79,5 +82,7 @@ final class WebPushManagerRegistry implements ContainerAwareInterface
                 return $service;
             }
         }
+
+        throw new \InvalidArgumentException(sprintf('Webpush service not found for class %s', $userClass));
     }
 }
