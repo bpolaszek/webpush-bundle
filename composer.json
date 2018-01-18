@@ -10,7 +10,6 @@
   ],
   "require": {
     "php": ">=7.1",
-    "bentools/helpfultraits": "^1.0",
     "minishlink/web-push": "^2.0",
     "symfony/symfony": "^2.7|^3.0|^4.0"
   },

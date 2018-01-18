@@ -2,10 +2,10 @@
 
 namespace BenTools\WebPushBundle\Action;
 
-use BenTools\HelpfulTraits\Symfony\SecurityAwareTrait;
 use BenTools\WebPushBundle\Registry\WebPushManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -13,8 +13,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class SubscriptionAction
 {
-    use SecurityAwareTrait;
-
     /**
      * @var WebPushManagerRegistry
      */
@@ -79,9 +77,14 @@ final class SubscriptionAction
             throw new MethodNotAllowedHttpException(['POST', 'DELETE']);
         }
 
-        $user = $this->getUser();
+        $token = $this->tokenStorage->getToken();
+        if (null === $token) {
+            throw new AccessDeniedHttpException('No authentication information available.');
+        }
 
-        if (null === $this->getUser()) {
+        $user = $token->getUser();
+
+        if (null === $user) {
             throw new BadRequestHttpException("User is not logged in.");
         }
 
@@ -93,6 +96,10 @@ final class SubscriptionAction
 
         if (!isset($subscription['endpoint'])) {
             throw new BadRequestHttpException('Invalid subscription object.');
+        }
+
+        if (!$user instanceof UserInterface) {
+            throw new \RuntimeException('This bundle only works with user object that implement ' . UserInterface::class);
         }
 
         $manager = $this->registry->getManager($user);
