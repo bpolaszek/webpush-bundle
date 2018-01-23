@@ -32,7 +32,7 @@ Insert this snippet in the templates where your user is logged in:
 <script>
     var webpush = new BenToolsWebPushClient({
         serverKey: '{{ bentools_pusher.server_key | e('js') }}',
-        url: '{{ path('bentools_webpush.subscription') }}'
+        url: '{{ url('bentools_webpush.subscription') }}'
     });
 </script>
 ```
