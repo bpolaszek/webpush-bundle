@@ -10,7 +10,10 @@
   ],
   "require": {
     "php": ">=7.1",
-    "minishlink/web-push": "^2.0",
+    "minishlink/web-push": "^2.0"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^3.3",
     "symfony/symfony": "^2.7|^3.0|^4.0"
   },
   "autoload": {
@@ -22,9 +25,6 @@
     "files": [
       "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php"
     ]
-  },
-  "require-dev": {
-    "symfony/var-dumper": "^3.3"
   },
   "config": {
     "sort-packages": true
