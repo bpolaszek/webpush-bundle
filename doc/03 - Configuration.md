@@ -22,6 +22,13 @@ bentools_webpush:
     resource: '@WebPushBundle/Resources/config/routing.xml'
     prefix: /webpush
 ```
+#### Update your services file:
+```yaml
+# app/config/services.yml
+services:
+  AppBundle\Services\UserSubscriptionManager:
+    arguments: ["@doctrine"]
+```
 
 #### Update your templates:
 
