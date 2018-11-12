@@ -1,0 +1,33 @@
+services:
+
+    doctrine:
+        class: BenTools\DoctrineStatic\ManagerRegistry
+        arguments:
+            -
+                - '@object_manager'
+
+    object_manager:
+        class: BenTools\DoctrineStatic\ObjectManager
+        arguments:
+            -
+                - '@test_user.repository'
+                - '@test_user_subscription.repository'
+
+    test_user.repository:
+        class: BenTools\DoctrineStatic\ObjectRepository
+        arguments:
+            - 'BenTools\WebPushBundle\Tests\Classes\TestUser'
+            - 'userName'
+
+    test_user_subscription.repository:
+        class: BenTools\DoctrineStatic\ObjectRepository
+        arguments:
+            - 'BenTools\WebPushBundle\Tests\Classes\TestUserSubscription'
+            - 'id'
+
+    BenTools\WebPushBundle\Tests\Classes\TestUserSubscriptionManager:
+        class: BenTools\WebPushBundle\Tests\Classes\TestUserSubscriptionManager
+        arguments:
+            - '@doctrine'
+        tags:
+            - { name: bentools_webpush.subscription_manager, user_class: 'BenTools\WebPushBundle\Tests\Classes\TestUser' }

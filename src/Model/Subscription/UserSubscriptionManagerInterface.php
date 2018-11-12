@@ -13,9 +13,10 @@ interface UserSubscriptionManagerInterface
      * @param UserInterface $user
      * @param string        $subscriptionHash
      * @param array         $subscription
+     * @param array         $options
      * @return UserSubscriptionInterface
      */
-    public function factory(UserInterface $user, string $subscriptionHash, array $subscription): UserSubscriptionInterface;
+    public function factory(UserInterface $user, string $subscriptionHash, array $subscription, array $options = []): UserSubscriptionInterface;
 
     /**
      * Return a string representation of the subscription's endpoint.

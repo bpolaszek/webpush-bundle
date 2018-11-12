@@ -42,7 +42,7 @@ You can control subscriptions on the client-side.
 ```twig
 <script>
     var webpush = new BenToolsWebPushClient({
-        serverKey: '{{ bentools_pusher.server_key | e('js') }}', // Required parameter
+        serverKey: '{{ bentools_webpush.server_key | e('js') }}', // Required parameter
         url: '{{ path('bentools_webpush.subscription') }}', // Required parameter
         promptIfNotSubscribed: false // Defaults true - setting this to false will disable automatic prompt
     });

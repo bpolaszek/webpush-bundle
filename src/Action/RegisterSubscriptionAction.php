@@ -5,13 +5,11 @@ namespace BenTools\WebPushBundle\Action;
 use BenTools\WebPushBundle\Registry\WebPushManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class SubscriptionAction
+final class RegisterSubscriptionAction
 {
     /**
      * @var WebPushManagerRegistry
@@ -20,15 +18,10 @@ final class SubscriptionAction
 
     /**
      * RegisterSubscriptionAction constructor.
-     * @param TokenStorageInterface  $tokenStorage
      * @param WebPushManagerRegistry $registry
      */
-    public function __construct(
-        TokenStorageInterface $tokenStorage,
-        WebPushManagerRegistry $registry
-    ) {
-
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(WebPushManagerRegistry $registry)
+    {
         $this->registry = $registry;
     }
 
@@ -36,13 +29,17 @@ final class SubscriptionAction
      * @param UserInterface $user
      * @param string        $subscriptionHash
      * @param array         $subscription
+     * @param array         $options
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      */
-    private function processSubscription(UserInterface $user, string $subscriptionHash, array $subscription)
+    private function subscribe(UserInterface $user, string $subscriptionHash, array $subscription, array $options = [])
     {
         $manager = $this->registry->getManager($user);
         $userSubscription = $manager->getUserSubscription($user, $subscriptionHash)
-        or $userSubscription = $manager->factory($user, $subscriptionHash, $subscription);
+        or $userSubscription = $manager->factory($user, $subscriptionHash, $subscription, $options);
         $manager->save($userSubscription);
     }
 
@@ -52,7 +49,7 @@ final class SubscriptionAction
      * @throws BadRequestHttpException
      * @throws \RuntimeException
      */
-    private function processUnsubscription(UserInterface $user, string $subscriptionHash)
+    private function unsubscribe(UserInterface $user, string $subscriptionHash)
     {
         $manager = $this->registry->getManager($user);
         $subscription = $manager->getUserSubscription($user, $subscriptionHash);
@@ -63,32 +60,20 @@ final class SubscriptionAction
     }
 
     /**
-     * @param Request $request
+     * @param Request       $request
+     * @param UserInterface $user
      * @return Response
-     * @throws BadRequestHttpException
-     * @throws MethodNotAllowedHttpException
-     * @throws \LogicException
-     * @throws \RuntimeException
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request, UserInterface $user): Response
     {
 
         if (!in_array($request->getMethod(), ['POST', 'DELETE'])) {
             throw new MethodNotAllowedHttpException(['POST', 'DELETE']);
         }
 
-        $token = $this->tokenStorage->getToken();
-        if (null === $token) {
-            throw new AccessDeniedHttpException('No authentication information available.');
-        }
-
-        $user = $token->getUser();
-
-        if (null === $user) {
-            throw new BadRequestHttpException("User is not logged in.");
-        }
-
-        $subscription = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true);
+        $subscription = $data['subscription'] ?? [];
+        $options = $data['options'] ?? [];
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new BadRequestHttpException(json_last_error_msg());
@@ -98,17 +83,13 @@ final class SubscriptionAction
             throw new BadRequestHttpException('Invalid subscription object.');
         }
 
-        if (!$user instanceof UserInterface) {
-            throw new \RuntimeException('This bundle only works with user object that implement ' . UserInterface::class);
-        }
-
         $manager = $this->registry->getManager($user);
         $subscriptionHash = $manager->hash($subscription['endpoint']);
 
         if ('DELETE' === $request->getMethod()) {
-            $this->processUnsubscription($user, $subscriptionHash);
+            $this->unsubscribe($user, $subscriptionHash);
         } else {
-            $this->processSubscription($user, $subscriptionHash, $subscription);
+            $this->subscribe($user, $subscriptionHash, $subscription, $options);
         }
 
         return new Response('', Response::HTTP_NO_CONTENT);

@@ -2,52 +2,32 @@
 
 namespace BenTools\WebPushBundle\Registry;
 
-use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface;
 use Doctrine\Common\Util\ClassUtils;
 use RuntimeException;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class WebPushManagerRegistry implements ContainerAwareInterface
+final class WebPushManagerRegistry
 {
-    use ContainerAwareTrait;
-
-    private $associations = [];
+    private $registry = [];
 
     /**
-     * WebPushManagerRegistry constructor.
-     * @param array $associations
+     * @param string                           $userClass
+     * @param UserSubscriptionManagerInterface $userSubscriptionManager
+     * @throws \InvalidArgumentException
      */
-    public function __construct(ContainerInterface $container, array $associations)
+    public function register(string $userClass, UserSubscriptionManagerInterface $userSubscriptionManager)
     {
-        $this->setContainer($container);
-        foreach ($associations as $key => $values) {
-            $this->register($key, $values);
+        if (!is_a($userClass, UserInterface::class, true)) {
+            throw new \InvalidArgumentException(sprintf('Expected class implementing %s, %s given', UserInterface::class, $userClass));
         }
-    }
 
-    /**
-     * @param string $key
-     * @param array  $values
-     * @throws ServiceNotFoundException
-     * @throws RuntimeException
-     */
-    private function register(string $key, array $values): void
-    {
-        if (!is_a($values['user_class'], UserInterface::class, true)) {
-            throw new RuntimeException(sprintf('User class %s must implement %s', $values['user_class'], UserInterface::class));
+        if (array_key_exists($userClass, $this->registry)) {
+            throw new \InvalidArgumentException(sprintf('User class %s is already registered.', $userClass));
         }
-        if (!is_a($values['user_subscription_class'], UserSubscriptionInterface::class, true)) {
-            throw new RuntimeException(sprintf('User subscription class %s must implement %s', $values['user_subscription_class'], UserSubscriptionInterface::class));
-        }
-        if (!$this->container->has(ltrim($values['manager'], '@'))) {
-            throw new ServiceNotFoundException(sprintf('Service %s not found - or make sure it is public.', $values['manager']));
-        }
-        $this->associations[$key] = $values;
+
+        $this->registry[$userClass] = $userSubscriptionManager;
     }
 
     /**
@@ -74,21 +54,15 @@ final class WebPushManagerRegistry implements ContainerAwareInterface
             $userClass = get_class($userClass);
         }
 
-        foreach ($this->associations as $association) {
-            if ($association['user_class'] === $userClass) {
-                $service = $this->container->get(ltrim($association['manager'], '@'));
-                if (!$service instanceof UserSubscriptionManagerInterface) {
-                    throw new RuntimeException(sprintf('Service %s must implement %s', $association['manager'], UserSubscriptionManagerInterface::class));
-                }
-                return $service;
-            }
-        }
-
         // Case of a doctrine proxied class
         if (0 === strpos($userClass, 'Proxies\__CG__') && class_exists('Doctrine\Common\Util\ClassUtils')) {
             return $this->getManager(ClassUtils::getRealClass($userClass));
         }
 
-        throw new \InvalidArgumentException(sprintf('Webpush service not found for class %s', $userClass));
+        if (!isset($this->registry[$userClass])) {
+            throw new \InvalidArgumentException(sprintf('There is no user subscription manager configured for class %s.', $userClass));
+        }
+
+        return $this->registry[$userClass];
     }
 }

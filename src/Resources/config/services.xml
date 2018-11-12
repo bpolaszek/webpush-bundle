@@ -4,17 +4,11 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <parameters>
-        <parameter id="bentools_webpush.public_key"></parameter>
-        <parameter id="bentools_webpush.private_key"></parameter>
-    </parameters>
-
     <services>
 
         <service class="BenTools\WebPushBundle\Twig\WebPushTwigExtension" id="BenTools\WebPushBundle\Twig\WebPushTwigExtension" public="false">
-            <call method="setContainer">
-                <argument id="service_container" type="service"/>
-            </call>
+            <argument type="string">%bentools_webpush.public_key%</argument>
+            <argument type="service" id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry"/>
             <tag name="twig.extension"/>
         </service>
 
@@ -33,8 +27,7 @@
             </argument>
         </service>
 
-        <service class="BenTools\WebPushBundle\Action\SubscriptionAction" id="BenTools\WebPushBundle\Action\SubscriptionAction" public="true">
-            <argument id="security.token_storage" type="service"/>
+        <service class="BenTools\WebPushBundle\Action\RegisterSubscriptionAction" id="BenTools\WebPushBundle\Action\RegisterSubscriptionAction" public="true">
             <argument id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" type="service"/>
             <tag name="controller.service_arguments"/>
         </service>
