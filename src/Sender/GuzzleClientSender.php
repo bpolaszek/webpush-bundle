@@ -75,15 +75,15 @@ class GuzzleClientSender implements WebPushNotificationSenderInterface
     }
 
     /**
-     * @param null|string $payload
-     * @param             $subscriptions
-     * @param array       $options
-     * @param array       $auth
-     * @return mixed
+     * @param WebPushMessage $message
+     * @param iterable       $subscriptions
+     * @param null           $promise
+     * @return iterable
      * @throws \ErrorException
+     * @throws \InvalidArgumentException
      * @throws \LogicException
      */
-    public function push(WebPushMessage $message, iterable $subscriptions, &$promise = null): void
+    public function push(WebPushMessage $message, iterable $subscriptions): iterable
     {
         /** @var UserSubscriptionInterface[] $subscriptions */
         $promises = [];
@@ -127,7 +127,7 @@ class GuzzleClientSender implements WebPushNotificationSenderInterface
             })
         ;
 
-        $promise->wait();
+        return $promise->wait();
     }
 
     /**
