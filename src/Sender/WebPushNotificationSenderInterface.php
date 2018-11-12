@@ -19,5 +19,4 @@ interface WebPushNotificationSenderInterface
      * @param UserSubscriptionInterface[] $subscribers
      */
     public function push(WebPushMessage $message, iterable $subscribers): void;
-
 }

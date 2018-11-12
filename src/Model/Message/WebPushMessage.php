@@ -96,5 +96,4 @@ final class WebPushMessage
     {
         return $this->auth;
     }
-
 }
