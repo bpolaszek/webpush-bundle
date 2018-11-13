@@ -2,50 +2,80 @@
 
 
 ```php
-# src/AppBundle/Services/NotificationSender.php
+namespace App\Services;
 
-namespace AppBundle\Services;
-
-use AppBundle\Entity\User;
-use BenTools\WebPushBundle\Model\Message\Notification;
+use BenTools\WebPushBundle\Model\Message\WebPushNotification;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
+use BenTools\WebPushBundle\Model\WebPushResponse;
 use BenTools\WebPushBundle\Registry\WebPushManagerRegistry;
-use Minishlink\WebPush\WebPush;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use BenTools\WebPushBundle\Sender\GuzzleClientSender;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-class NotificationSender implements ContainerAwareInterface
+class NotificationSender
 {
-    use ContainerAwareTrait;
+    /**
+     * @var WebPushManagerRegistry
+     */
+    private $webPushManagerRegistry;
 
     /**
-     * @param User $user
+     * @var GuzzleClientSender
      */
-    public function sendAwesomeNotification(User $user)
+    private $sender;
+
+    /**
+     * NotificationSender constructor.
+     * @param WebPushManagerRegistry $webPushManagerRegistry
+     * @param GuzzleClientSender     $sender
+     */
+    public function __construct(
+        WebPushManagerRegistry $webPushManagerRegistry,
+        GuzzleClientSender $sender) {
+        $this->webPushManagerRegistry = $webPushManagerRegistry;
+        $this->sender = $sender;
+    }
+
+
+    /**
+     * @param UserInterface $user
+     */
+    public function sendAwesomeNotification(UserInterface $user)
     {
-        $sender = $this->container->get(WebPush::class);
-        $managers = $this->container->get(WebPushManagerRegistry::class);
-        $myUserManager = $managers->getManager($user);
-        foreach ($myUserManager->findByUser($user) as $subscription) {
-            $sender->sendNotification(
-                $subscription->getEndpoint(),
-                $this->createAwesomeNotification(),
-                $subscription->getPublicKey(),
-                $subscription->getAuthToken()
-            );
+        $manager = $this->webPushManagerRegistry->getManager($user);
+        $subscriptions = $manager->findByUser($user);
+
+        // Get subscriptions as hash => $subscription
+        $subscriptions = array_combine(
+            array_map(function (UserSubscriptionInterface $subscription): string {
+                return $subscription->getSubscriptionHash();
+            }, $subscriptions),
+            $subscriptions
+        );
+
+        $notification = $this->createAwesomeNotification();
+
+        /**
+         * @var WebPushResponse[] $responses
+         */
+        $responses = $this->sender->push($notification->createMessage(), $subscriptions);
+
+        foreach ($responses as $response) {
+            if ($response->isExpired()) {
+                $manager->delete($subscriptions[$response->getSubscriptionHash()]);
+            }
         }
-        $sender->flush();
+
     }
 
     /**
-     * @return Notification
+     * @return WebPushNotification
      */
-    private function createAwesomeNotification(): Notification
+    private function createAwesomeNotification(): WebPushNotification
     {
-        return new Notification([
-            'title' => 'Awesome title',
-            'body'  => 'Symfony is great!',
-            'icon'  => 'https://symfony.com/logos/symfony_black_03.png',
-            'data'  => [
+        return new WebPushNotification('Awesome title', [
+            'body' => 'Symfony is great!',
+            'icon' => 'https://symfony.com/logos/symfony_black_03.png',
+            'data' => [
                 'link' => 'https://www.symfony.com',
             ],
         ]);

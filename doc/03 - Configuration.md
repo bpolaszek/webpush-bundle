@@ -3,41 +3,26 @@
 #### Configure the bundle:
 
 ```yaml
-# app/config/config.yml
+# config/packages/bentools_webpush.yaml (SF4) or app/config/config.yml (SF3)
 bentools_webpush:
     settings:
-        public_key: '%bentools_webpush.public_key%'
-        private_key: '%bentools_webpush.private_key%'
-    associations:
-        my_users:
-            user_class: AppBundle\Entity\User
-            user_subscription_class: AppBundle\Entity\UserSubscription
-            manager: '@AppBundle\Services\UserSubscriptionManager' # Manager service id
+        public_key: 'your_public_key'
+        private_key: 'your_private_key'
 ```
 
 #### Update your router:
 ```yaml
-# app/config/routing.yml
+# config/routing.yaml (SF4) or app/config/routing.yml (SF3)
 bentools_webpush:
     resource: '@WebPushBundle/Resources/config/routing.xml'
     prefix: /webpush
 ```
 
-#### Update your templates:
+You will have a new route called `bentools_webpush` which will be the Ajax endpoint for handling subscriptions (POST requests) / unsubscriptions (DELETE requests).
 
-Insert this snippet in the templates where your user is logged in:
+The global variable `bentools_webpush.public_key` is now exposed in Twig.
 
-```twig
-<script src="{{ asset('bundles/webpush/js/webpush_client.js') }}" data-webpushclient></script>
-<script>
-    var webpush = new BenToolsWebPushClient({
-        serverKey: '{{ bentools_pusher.server_key | e('js') }}',
-        url: '{{ url('bentools_webpush.subscription') }}'
-    });
-</script>
-```
-
-_This will install the service worker and prompt your users to accept notifications._
+To handle subscriptions/unsubscriptions on the front-end side, have a look at [webpush-client](https://www.npmjs.com/package/webpush-client).
 
 Previous: [The UserSubscription Manager](02%20-%20The%20UserSubscription%20Manager.md)
 

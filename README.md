@@ -1,12 +1,17 @@
 # Webpush Bundle
 
-This bundle leverages [minishlink/web-push](https://github.com/web-push-libs/web-push-php) library to associate your Symfony users with Webpush subscriptions.
+This bundle allows your app to leverage [the Web Push protocol](https://developers.google.com/web/fundamentals/push-notifications/web-push-protocol) to send notifications to your users' devices, whether they're online or not.
 
-This way you can integrate push messages into your app to send notifications.
+With a small amount of code, you'll be able to associate your [Symfony users](https://symfony.com/doc/current/security.html#a-create-your-user-class) to WebPush Subscriptions:
+
+* A single user can subscribe from multiple browsers/devices
+* Multiple users can subscribe from a single browser/device
+
+This bundle uses your own persistence system (Doctrine or anything else) to manage these associations.
 
 We assume you have a minimum knowledge of how Push Notifications work, otherwise we highly recommend you to read [Matt Gaunt's Web Push Book](https://web-push-book.gauntface.com/).
 
-## Use cases
+**Example Use cases**
 
 * You have a todolist app - notify users they're assigned a task
 * You have an eCommerce app:
@@ -25,52 +30,19 @@ We assume you have a minimum knowledge of how Push Notifications work, otherwise
 
 ## Getting started
 
-Because there can be different User implementations, and that some front-end is implied, there are several steps to follow to get started:
-1. Install the bundle and its assets
-2. Create your own `UserSubscription` class and its associated manager
-3. Update your `config.yml` and `routing.yml`
-4. Insert a JS snippet in your twig views.
-
-Let's go!
-
--------------
+This bundle is just the back-end part of the subscription process. For the front-end part, have a look at the [webpush-client](https://www.npmjs.com/package/webpush-client) package.
 
 ### Composer is your friend:
 
 PHP7.1+ is required.
 
 ```bash
-composer require bentools/webpush-bundle 0.3.*
+composer require bentools/webpush-bundle 0.4.*
 ```
 
 _We aren't on stable version yet - expect some changes._
 
-
-### Add the bundle to your kernel:
-```php
-# app/AppKernel.php
-
-class AppKernel extends Kernel
-{
-    public function registerBundles()
-    {
-        $bundles = [
-            // ...
-            new BenTools\WebPushBundle\WebPushBundle(),
-        ];
-
-        return $bundles;
-    }
-}
-```
-
-### Install assets:
-
-```bash
-php bin/console assets:install --symlink
-```
-_We provide a service worker and a JS client._
-
+And add the bundle to your kernel if you're using Symfony 3.
 
 ### Generate your VAPID keys:
 
@@ -78,12 +50,14 @@ _We provide a service worker and a JS client._
 php bin/console webpush:generate:keys
 ```
 
+You'll have to update your config with the given keys. We encourage you to store them in environment variables or in `parameters.yml`.
+
 
 Next: [Create your UserSubscription class](doc/01%20-%20The%20UserSubscription%20Class.md)
 
 ## Tests
 
-We mostly need functionnal tests. Contributions are very welcome!
+> ./vendor/bin/phpunit
 
 ## License
 

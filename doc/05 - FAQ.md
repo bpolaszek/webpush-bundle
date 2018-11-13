@@ -19,15 +19,6 @@ bentools_webpush:
     settings:
         public_key: '%bentools_webpush.public_key%'
         private_key: '%bentools_webpush.private_key%'
-    associations:
-        employees:
-            user_class: AppBundle\Entity\Employee
-            user_subscription_class: AppBundle\Entity\EmployeeSubscription
-            manager: '@AppBundle\Services\EmployeeSubscriptionManager' 
-        customers:
-            user_class: AppBundle\Entity\Customer
-            user_subscription_class: AppBundle\Entity\CustomerSubscription
-            manager: '@AppBundle\Services\CustomerSubscriptionManager' 
 ```
 
 
