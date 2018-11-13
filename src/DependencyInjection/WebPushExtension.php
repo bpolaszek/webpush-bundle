@@ -22,7 +22,6 @@ class WebPushExtension extends Extension
         $configuration = new Configuration();
 
         $config = $this->processConfiguration($configuration, $configs);
-        $container->setParameter('bentools_webpush.config.associations', $config['associations'] ?? []);
         $container->setParameter('bentools_webpush.public_key', $config['settings']['public_key'] ?? null);
         $container->setParameter('bentools_webpush.private_key', $config['settings']['private_key'] ?? null);
         $loader = new XmlFileLoader($container, new FileLocator([__DIR__ . '/../Resources/config/']));

@@ -15,9 +15,17 @@ use function GuzzleHttp\Psr7\stream_for;
 
 final class RequestBuilder
 {
-    private const GCM_URL = 'https://android.googleapis.com/gcm/send';
     private const FCM_BASE_URL = 'https://fcm.googleapis.com';
 
+    /**
+     * @param WebPushMessage            $message
+     * @param UserSubscriptionInterface $subscription
+     * @param int                       $ttl
+     * @param int                       $maxPaddingLength
+     * @return RequestInterface
+     * @throws \ErrorException
+     * @throws \InvalidArgumentException
+     */
     public function createRequest(
         WebPushMessage $message,
         UserSubscriptionInterface $subscription,
@@ -25,7 +33,7 @@ final class RequestBuilder
         $maxPaddingLength = Encryption::MAX_COMPATIBILITY_PAYLOAD_LENGTH
     ): RequestInterface {
         $request = new Request('POST', $subscription->getEndpoint());
-        $request = $this->withOptionHeaders($request, $message);
+        $request = $this->withOptionalHeaders($request, $message);
         $request = $request->withHeader('TTL', $ttl);
 
 
@@ -115,7 +123,7 @@ final class RequestBuilder
      * @return RequestInterface
      * @throws \InvalidArgumentException
      */
-    private function withOptionHeaders(RequestInterface $request, WebPushMessage $message): RequestInterface
+    private function withOptionalHeaders(RequestInterface $request, WebPushMessage $message): RequestInterface
     {
         foreach (['urgency', 'topic'] as $option) {
             if (null !== $message->getOption($option)) {

@@ -6,18 +6,20 @@
 
     <services>
 
-        <service class="BenTools\WebPushBundle\Twig\WebPushTwigExtension" id="BenTools\WebPushBundle\Twig\WebPushTwigExtension" public="false">
+        <service class="BenTools\WebPushBundle\Twig\WebPushTwigExtension" id="BenTools\WebPushBundle\Twig\WebPushTwigExtension">
             <argument type="string">%bentools_webpush.public_key%</argument>
             <argument type="service" id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry"/>
             <tag name="twig.extension"/>
         </service>
 
-        <service class="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" public="true">
-            <argument id="service_container" type="service"/>
-            <argument>%bentools_webpush.config.associations%</argument>
+        <service class="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" />
+
+        <service class="BenTools\WebPushBundle\Action\RegisterSubscriptionAction" id="BenTools\WebPushBundle\Action\RegisterSubscriptionAction" public="true">
+            <argument id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" type="service"/>
+            <tag name="controller.service_arguments"/>
         </service>
 
-        <service class="Minishlink\WebPush\WebPush" id="Minishlink\WebPush\WebPush" public="true">
+        <service class="BenTools\WebPushBundle\Sender\GuzzleClientSender" id="BenTools\WebPushBundle\Sender\GuzzleClientSender">
             <argument type="collection">
                 <argument key="VAPID" type="collection">
                     <argument key="subject">%router.request_context.host%</argument>
@@ -25,11 +27,6 @@
                     <argument key="privateKey">%bentools_webpush.private_key%</argument>
                 </argument>
             </argument>
-        </service>
-
-        <service class="BenTools\WebPushBundle\Action\RegisterSubscriptionAction" id="BenTools\WebPushBundle\Action\RegisterSubscriptionAction" public="true">
-            <argument id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" type="service"/>
-            <tag name="controller.service_arguments"/>
         </service>
 
     </services>

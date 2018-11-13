@@ -15,9 +15,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class GuzzleClientSender implements WebPushNotificationSenderInterface
 {
-    public const GCM_URL = 'https://android.googleapis.com/gcm/send';
-    public const FCM_BASE_URL = 'https://fcm.googleapis.com';
-
     /**
      * @var Client
      */
@@ -44,40 +41,30 @@ class GuzzleClientSender implements WebPushNotificationSenderInterface
     private $requestBuilder;
 
     /**
-     * WebPush constructor.
-     *
-     * @param array    $auth           Some servers needs authentication
-     * @param array    $defaultOptions TTL, urgency, topic, batchSize
-     * @param int|null $timeout        Timeout of POST request
-     * @param array    $clientOptions
-     *
+     * GuzzleClientSender constructor.
+     * @param array                $auth
+     * @param array                $defaultOptions
+     * @param ClientInterface|null $client
      * @throws \ErrorException
      */
     public function __construct(
-        ClientInterface $client,
         array $auth = [],
         array $defaultOptions = [],
-        RequestBuilder $requestBuilder = null
+        ClientInterface $client = null
     ) {
 
-        if (ini_get('mbstring.func_overload') >= 2) {
-            trigger_error("[WebPush] mbstring.func_overload is enabled for str* functions. You must disable it if you want to send push notifications with payload or use VAPID. You can fix this in your php.ini.", E_USER_NOTICE);
-        }
-
         if (isset($auth['VAPID'])) {
-            $auth['VAPID'] = VAPID::validate($auth['VAPID']);
+            $auth['VAPID']['validated'] = false;
         }
-
-        $this->client = $client;
         $this->auth = $auth;
         $this->setDefaultOptions($defaultOptions);
-        $this->requestBuilder = $requestBuilder ?? new RequestBuilder();
+        $this->client = $client ?? new Client();
+        $this->requestBuilder = new RequestBuilder();
     }
 
     /**
      * @param WebPushMessage $message
      * @param iterable       $subscriptions
-     * @param null           $promise
      * @return iterable
      * @throws \ErrorException
      * @throws \InvalidArgumentException
@@ -87,6 +74,11 @@ class GuzzleClientSender implements WebPushNotificationSenderInterface
     {
         /** @var UserSubscriptionInterface[] $subscriptions */
         $promises = [];
+
+        if (isset($this->auth['VAPID']) && empty($this->auth['VAPID']['validated'])) {
+            $this->auth['VAPID'] = VAPID::validate($this->auth['VAPID']) + ['validated' => true];
+        }
+
         foreach ($subscriptions as $subscription) {
             $subscriptionHash = $subscription->getSubscriptionHash();
             $auth = $message->getAuth() + $this->auth;

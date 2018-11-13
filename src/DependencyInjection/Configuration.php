@@ -25,22 +25,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-
-                ->arrayNode('associations')
-                ->useAttributeAsKey('name')
-                ->prototype('array')
-                    ->children()
-                        ->scalarNode('user_class')
-                        ->isRequired()
-                        ->end()
-                        ->scalarNode('user_subscription_class')
-                        ->isRequired()
-                        ->end()
-                        ->scalarNode('manager')
-                        ->isRequired()
-                        ->end()
-                    ->end()
-                ->end()
             ->end()
         ;
 
