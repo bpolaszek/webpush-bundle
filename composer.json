@@ -1,6 +1,6 @@
 {
   "name": "bentools/webpush-bundle",
-  "description": "Symfony Bundle: Associate your users to webpush subscriptions.",
+  "description": "Send push notifications through Web Push Protocol to your Symfony users.",
   "license": "MIT",
   "authors": [
     {
@@ -21,7 +21,7 @@
     "bentools/doctrine-static": "1.0.x-dev",
     "nyholm/symfony-bundle-test": "^1.4",
     "phpunit/phpunit": "^5.0|^6.0|^7.0",
-    "symfony/config": "^4.1",
+    "symfony/config": "^3.0|^4.0",
     "symfony/dependency-injection": "^3.0|^4.0",
     "symfony/framework-bundle": "^3.0|^4.0",
     "symfony/http-foundation": "^3.0|^4.0",
@@ -51,5 +51,23 @@
     "branch-alias": {
       "dev-master": "1.0.x-dev"
     }
-  }
+  },
+  "keywords": [
+    "symfony",
+    "bundle",
+    "flex",
+    "push",
+    "notification",
+    "push notifications",
+    "web push",
+    "webpush",
+    "subscription",
+    "push subscription",
+    "PushSubscription",
+    "vapid",
+    "fcm",
+    "browser",
+    "chrome",
+    "firefox"
+  ]
 }
