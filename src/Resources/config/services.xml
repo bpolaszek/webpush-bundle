@@ -7,7 +7,7 @@
     <services>
 
         <service class="BenTools\WebPushBundle\Twig\WebPushTwigExtension" id="BenTools\WebPushBundle\Twig\WebPushTwigExtension">
-            <argument type="string">%bentools_webpush.public_key%</argument>
+            <argument type="string">%bentools_webpush.vapid_public_key%</argument>
             <argument type="service" id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry"/>
             <tag name="twig.extension"/>
         </service>
@@ -22,9 +22,9 @@
         <service class="BenTools\WebPushBundle\Sender\GuzzleClientSender" id="BenTools\WebPushBundle\Sender\GuzzleClientSender">
             <argument type="collection">
                 <argument key="VAPID" type="collection">
-                    <argument key="subject">%router.request_context.host%</argument>
-                    <argument key="publicKey">%bentools_webpush.public_key%</argument>
-                    <argument key="privateKey">%bentools_webpush.private_key%</argument>
+                    <argument key="subject">%bentools_webpush.vapid_subject%</argument>
+                    <argument key="publicKey">%bentools_webpush.vapid_public_key%</argument>
+                    <argument key="privateKey">%bentools_webpush.vapid_private_key%</argument>
                 </argument>
             </argument>
         </service>

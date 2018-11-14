@@ -5,7 +5,7 @@ namespace BenTools\WebPushBundle\Model\Message;
 use ArrayAccess;
 use JsonSerializable;
 
-final class WebPushNotification implements JsonSerializable, ArrayAccess
+final class PushNotification implements JsonSerializable, ArrayAccess
 {
 
     const BODY = 'body';
@@ -97,11 +97,11 @@ final class WebPushNotification implements JsonSerializable, ArrayAccess
     /**
      * @param array $options
      * @param array $auth
-     * @return WebPushMessage
+     * @return PushMessage
      */
-    public function createMessage(array $options = [], array $auth = []): WebPushMessage
+    public function createMessage(array $options = [], array $auth = []): PushMessage
     {
-        return new WebPushMessage((string) $this, $options, $auth);
+        return new PushMessage((string) $this, $options, $auth);
     }
 
     /**

@@ -2,9 +2,9 @@
 
 namespace BenTools\WebPushBundle\Sender;
 
-use BenTools\WebPushBundle\Model\Message\WebPushMessage;
+use BenTools\WebPushBundle\Model\Message\PushMessage;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
-use BenTools\WebPushBundle\Model\WebPushResponse;
+use BenTools\WebPushBundle\Model\Response\PushResponse;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -63,14 +63,14 @@ class GuzzleClientSender implements WebPushNotificationSenderInterface
     }
 
     /**
-     * @param WebPushMessage $message
-     * @param iterable       $subscriptions
-     * @return iterable
+     * @param PushMessage $message
+     * @param iterable    $subscriptions
+     * @return PushResponse[]
      * @throws \ErrorException
      * @throws \InvalidArgumentException
      * @throws \LogicException
      */
-    public function push(WebPushMessage $message, iterable $subscriptions): iterable
+    public function push(PushMessage $message, iterable $subscriptions): iterable
     {
         /** @var UserSubscriptionInterface[] $subscriptions */
         $promises = [];
@@ -97,13 +97,13 @@ class GuzzleClientSender implements WebPushNotificationSenderInterface
             }
 
             $promises[$subscriptionHash] = $this->client->sendAsync($request)
-                ->then(function (ResponseInterface $response) use ($subscriptionHash) {
-                    return new WebPushResponse($subscriptionHash, $response->getStatusCode());
+                ->then(function (ResponseInterface $response) use ($subscription) {
+                    return new PushResponse($subscription, $response->getStatusCode());
                 })
-                ->otherwise(function (\Throwable $reason) use ($subscriptionHash) {
+                ->otherwise(function (\Throwable $reason) use ($subscription) {
 
                     if ($reason instanceof RequestException && $reason->hasResponse()) {
-                        return new WebPushResponse($subscriptionHash, $reason->getResponse()->getStatusCode());
+                        return new PushResponse($subscription, $reason->getResponse()->getStatusCode());
                     }
 
                     throw $reason;

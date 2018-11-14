@@ -19,8 +19,8 @@ final class BundleTest extends KernelTestCase
      */
     public function parameters_are_set()
     {
-        $this->assertEquals('this_is_a_private_key', self::$kernel->getContainer()->getParameter('bentools_webpush.private_key'));
-        $this->assertEquals('this_is_a_public_key', self::$kernel->getContainer()->getParameter('bentools_webpush.public_key'));
+        $this->assertEquals('this_is_a_private_key', self::$kernel->getContainer()->getParameter('bentools_webpush.vapid_private_key'));
+        $this->assertEquals('this_is_a_public_key', self::$kernel->getContainer()->getParameter('bentools_webpush.vapid_public_key'));
         $this->assertTrue(self::$kernel->getContainer()->has(WebPushManagerRegistry::class));
     }
 
@@ -29,7 +29,19 @@ final class BundleTest extends KernelTestCase
      */
     public function manager_is_found()
     {
+        // Find by class name
         $this->assertInstanceOf(TestUserSubscriptionManager::class, self::$kernel->getContainer()->get(WebPushManagerRegistry::class)->getManager(TestUser::class));
+
+        // Find by object
         $this->assertInstanceOf(TestUserSubscriptionManager::class, self::$kernel->getContainer()->get(WebPushManagerRegistry::class)->getManager(new TestUser('foo')));
+    }
+
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     */
+    public function unknown_manager_raises_exception()
+    {
+        self::$kernel->getContainer()->get(WebPushManagerRegistry::class)->getManager(Foo::class);
     }
 }

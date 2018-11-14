@@ -2,9 +2,9 @@
 
 namespace BenTools\WebPushBundle\Sender;
 
-use BenTools\WebPushBundle\Model\Message\WebPushMessage;
+use BenTools\WebPushBundle\Model\Message\PushMessage;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
-use BenTools\WebPushBundle\Model\WebPushResponse;
+use BenTools\WebPushBundle\Model\Response\PushResponse;
 
 interface WebPushNotificationSenderInterface
 {
@@ -18,7 +18,7 @@ interface WebPushNotificationSenderInterface
      *
      * @param string   $payload
      * @param UserSubscriptionInterface[] $subscribers
-     * @return WebPushResponse[]
+     * @return PushResponse[]
      */
-    public function push(WebPushMessage $message, iterable $subscribers): iterable;
+    public function push(PushMessage $message, iterable $subscribers): iterable;
 }

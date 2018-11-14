@@ -22,7 +22,7 @@ interface UserSubscriptionManagerInterface
      * Return a string representation of the subscription's endpoint.
      * Example: md5($endpoint).
      *
-     * @param array $subscription
+     * @param string $endpoint
      * @return string
      */
     public function hash(string $endpoint): string;

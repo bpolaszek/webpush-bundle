@@ -3,7 +3,7 @@
 namespace BenTools\WebPushBundle\Sender;
 
 use Base64Url\Base64Url;
-use BenTools\WebPushBundle\Model\Message\WebPushMessage;
+use BenTools\WebPushBundle\Model\Message\PushMessage;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
@@ -18,7 +18,7 @@ final class RequestBuilder
     private const FCM_BASE_URL = 'https://fcm.googleapis.com';
 
     /**
-     * @param WebPushMessage            $message
+     * @param PushMessage               $message
      * @param UserSubscriptionInterface $subscription
      * @param int                       $ttl
      * @param int                       $maxPaddingLength
@@ -27,7 +27,7 @@ final class RequestBuilder
      * @throws \InvalidArgumentException
      */
     public function createRequest(
-        WebPushMessage $message,
+        PushMessage $message,
         UserSubscriptionInterface $subscription,
         int $ttl = 0,
         $maxPaddingLength = Encryption::MAX_COMPATIBILITY_PAYLOAD_LENGTH
@@ -119,11 +119,11 @@ final class RequestBuilder
 
     /**
      * @param RequestInterface $request
-     * @param WebPushMessage   $message
+     * @param PushMessage      $message
      * @return RequestInterface
      * @throws \InvalidArgumentException
      */
-    private function withOptionalHeaders(RequestInterface $request, WebPushMessage $message): RequestInterface
+    private function withOptionalHeaders(RequestInterface $request, PushMessage $message): RequestInterface
     {
         foreach (['urgency', 'topic'] as $option) {
             if (null !== $message->getOption($option)) {

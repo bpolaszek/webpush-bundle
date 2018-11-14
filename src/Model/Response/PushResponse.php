@@ -1,8 +1,10 @@
 <?php
 
-namespace BenTools\WebPushBundle\Model;
+namespace BenTools\WebPushBundle\Model\Response;
 
-final class WebPushResponse
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
+
+final class PushResponse
 {
     const SUCCESS = 201;
     const BAD_REQUEST = 400;
@@ -12,32 +14,32 @@ final class WebPushResponse
     const TOO_MANY_REQUESTS = 429;
 
     /**
-     * @var string
-     */
-    private $subscriptionHash;
-
-    /**
      * @var int
      */
     private $statusCode;
 
     /**
-     * WebPushResponse constructor.
-     * @param string $subscriptionHash
-     * @param int    $statusCode
+     * @var UserSubscriptionInterface
      */
-    public function __construct(string $subscriptionHash, int $statusCode)
+    private $subscription;
+
+    /**
+     * WebPushResponse constructor.
+     * @param UserSubscriptionInterface $subscription
+     * @param int                       $statusCode
+     */
+    public function __construct(UserSubscriptionInterface $subscription, int $statusCode)
     {
-        $this->subscriptionHash = $subscriptionHash;
+        $this->subscription = $subscription;
         $this->statusCode = $statusCode;
     }
 
     /**
-     * @return string
+     * @return UserSubscriptionInterface
      */
-    public function getSubscriptionHash(): string
+    public function getSubscription(): UserSubscriptionInterface
     {
-        return $this->subscriptionHash;
+        return $this->subscription;
     }
 
     /**

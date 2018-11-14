@@ -8,7 +8,7 @@ namespace BenTools\WebPushBundle\Model\Message;
  * - An optionnal array of options (like TTL, Topic, etc)
  * - An optionnal array of authentication data (if different from the client)
  */
-final class WebPushMessage
+final class PushMessage
 {
 
     private $payload, $options, $auth;

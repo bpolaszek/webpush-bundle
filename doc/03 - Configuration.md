@@ -3,7 +3,8 @@
 #### Configure the bundle:
 
 ```yaml
-# config/packages/bentools_webpush.yaml (SF4) or app/config/config.yml (SF3)
+# app/config/config.yml (SF3)
+# config/packages/bentools_webpush.yaml (SF4) 
 bentools_webpush:
     settings:
         public_key: 'your_public_key'
@@ -12,7 +13,8 @@ bentools_webpush:
 
 #### Update your router:
 ```yaml
-# config/routing.yaml (SF4) or app/config/routing.yml (SF3)
+# app/config/routing.yml (SF3)
+# config/routing.yaml (SF4)
 bentools_webpush:
     resource: '@WebPushBundle/Resources/config/routing.xml'
     prefix: /webpush

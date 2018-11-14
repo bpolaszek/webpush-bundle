@@ -11,9 +11,9 @@ You're free to use Doctrine or anything else.
 
 Example class:
 ```php
-# src/AppBundle/Entity/UserSubscription.php
+# src/Entity/UserSubscription.php
 
-namespace AppBundle\Entity;
+namespace App\Entity;
 
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use Doctrine\ORM\Mapping as ORM;

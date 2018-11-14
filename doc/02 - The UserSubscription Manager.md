@@ -8,7 +8,7 @@ Then, create a class that implements `BenTools\WebPushBundle\Model\Subscription\
 
 Example with Doctrine:
 ```php
-# src/AppBundle/Services/UserSubscriptionManager.php
+# src/Services/UserSubscriptionManager.php
 
 namespace App\Services;
 
@@ -106,7 +106,8 @@ class UserSubscriptionManager implements UserSubscriptionManagerInterface
 Now, register your `UserSubscriptionManager` in your `services.yaml`:
 
 ```yaml
-# config/services.yaml (SF4) or app/config/services.yml (SF3)
+# app/config/services.yml (SF3)
+# config/services.yaml (SF4) 
 
 services:
     App\Services\UserSubscriptionManager:

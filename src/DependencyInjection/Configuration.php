@@ -17,6 +17,8 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('settings')
                     ->children()
+                        ->scalarNode('subject')
+                        ->end()
                         ->scalarNode('public_key')
                         ->isRequired()
                         ->end()
