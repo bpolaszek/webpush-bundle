@@ -22,7 +22,7 @@ bentools_webpush:
 
 You will have a new route called `bentools_webpush` which will be the Ajax endpoint for handling subscriptions (POST requests) / unsubscriptions (DELETE requests).
 
-The global variable `bentools_webpush.public_key` is now exposed in Twig.
+Your VAPID public key is now exposed through Twig's `bentools_webpush.server_key` global variable.
 
 To handle subscriptions/unsubscriptions on the front-end side, have a look at [webpush-client](https://www.npmjs.com/package/webpush-client).
 
