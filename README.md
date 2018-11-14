@@ -62,3 +62,7 @@ Next: [Create your UserSubscription class](doc/01%20-%20The%20UserSubscription%2
 ## License
 
 MIT
+
+## Credits
+
+This bundle leverages the [minishlink/web-push](https://github.com/web-push-libs/web-push-php) library.
