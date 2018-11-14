@@ -40,9 +40,11 @@ PHP7.1+ is required.
 composer require bentools/webpush-bundle 0.4.*
 ```
 
-_We aren't on stable version yet - expect some changes._
+If you're using Symfony 3, add the bundle to your kernel. With Symfony Flex, this should be done automatically.
 
-And add the bundle to your kernel if you're using Symfony 3.
+⚠️ _We aren't on stable version yet - expect some changes._
+
+
 
 ### Generate your VAPID keys:
 
