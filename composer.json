@@ -10,10 +10,11 @@
   ],
   "require": {
     "php": ">=7.1",
-    "ext-json": "*",
     "ext-curl": "*",
+    "ext-json": "*",
     "ext-mbstring": "*",
     "ext-openssl": "*",
+    "guzzlehttp/guzzle": "~6.0",
     "minishlink/web-push": "^4.0",
     "symfony/http-kernel": "^3.0|^4.0"
   },
@@ -21,7 +22,7 @@
     "bentools/doctrine-static": "1.0.x-dev",
     "nyholm/symfony-bundle-test": "^1.4",
     "phpunit/phpunit": "^5.0|^6.0|^7.0",
-    "symfony/config": "^3.0|^4.0",
+    "symfony/config": "^4.0",
     "symfony/dependency-injection": "^3.0|^4.0",
     "symfony/framework-bundle": "^3.0|^4.0",
     "symfony/http-foundation": "^3.0|^4.0",
