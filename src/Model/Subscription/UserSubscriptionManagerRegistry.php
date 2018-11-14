@@ -1,15 +1,17 @@
 <?php
 
-namespace BenTools\WebPushBundle\Registry;
+namespace BenTools\WebPushBundle\Model\Subscription;
 
-use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface;
 use Doctrine\Common\Util\ClassUtils;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-final class WebPushManagerRegistry
+final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerInterface
 {
+    /**
+     * @var UserSubscriptionManagerInterface[]
+     */
     private $registry = [];
 
     /**
@@ -25,6 +27,10 @@ final class WebPushManagerRegistry
 
         if (array_key_exists($userClass, $this->registry)) {
             throw new \InvalidArgumentException(sprintf('User class %s is already registered.', $userClass));
+        }
+
+        if (self::class === get_class($userSubscriptionManager)) {
+            throw new \InvalidArgumentException(sprintf('You must define your own user subscription manager for %s.', $userClass));
         }
 
         $this->registry[$userClass] = $userSubscriptionManager;
@@ -64,5 +70,65 @@ final class WebPushManagerRegistry
         }
 
         return $this->registry[$userClass];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function factory(UserInterface $user, string $subscriptionHash, array $subscription, array $options = []): UserSubscriptionInterface
+    {
+        return $this->getManager($user)->factory($user, $subscriptionHash, $subscription, $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hash(string $endpoint, UserInterface $user): string
+    {
+        return $this->getManager($user)->hash($endpoint, $user);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserSubscription(UserInterface $user, string $subscriptionHash): ?UserSubscriptionInterface
+    {
+        return $this->getManager($user)->getUserSubscription($user, $subscriptionHash);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByUser(UserInterface $user): iterable
+    {
+        return $this->getManager($user)->findByUser($user);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByHash(string $subscriptionHash): iterable
+    {
+        foreach ($this->registry as $manager) {
+            foreach ($manager->findByHash($subscriptionHash) as $userSubscription) {
+                yield $userSubscription;
+            }
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function save(UserSubscriptionInterface $userSubscription): void
+    {
+        $this->getManager($userSubscription->getUser())->save($userSubscription);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(UserSubscriptionInterface $userSubscription): void
+    {
+        $this->getManager($userSubscription->getUser())->delete($userSubscription);
     }
 }

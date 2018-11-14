@@ -47,7 +47,7 @@ class UserSubscriptionManager implements UserSubscriptionManagerInterface
     /**
      * @inheritDoc
      */
-    public function hash(string $endpoint): string {
+    public function hash(string $endpoint, UserInterface $user): string {
         return md5($endpoint); // Encode it as you like    
     }
 

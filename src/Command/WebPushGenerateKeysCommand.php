@@ -18,7 +18,7 @@ final class WebPushGenerateKeysCommand extends ContainerAwareCommand
     {
         $this
             ->setName('webpush:generate:keys')
-            ->setDescription('Generate your VAPID keys for BenTools/WebPush.');
+            ->setDescription('Generate your VAPID keys for bentools/webpush.');
     }
 
     /**

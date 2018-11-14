@@ -10,16 +10,16 @@ use App\Entity\Order;
 use App\Events\OrderEvent;
 use App\Events\OrderEvents;
 use BenTools\WebPushBundle\Model\Message\PushNotification;
-use BenTools\WebPushBundle\Registry\WebPushManagerRegistry;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
 use BenTools\WebPushBundle\Sender\GuzzleClientSender;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class NotificationSender implements EventSubscriberInterface
+class NotificationSenderListener implements EventSubscriberInterface
 {
     /**
-     * @var WebPushManagerRegistry
+     * @var UserSubscriptionManagerRegistry
      */
-    private $webPushManagerRegistry;
+    private $userSubscriptionManager;
 
     /**
      * @var GuzzleClientSender
@@ -28,14 +28,14 @@ class NotificationSender implements EventSubscriberInterface
 
     /**
      * NotificationSender constructor.
-     * @param WebPushManagerRegistry $webPushManagerRegistry
-     * @param GuzzleClientSender     $sender
+     * @param UserSubscriptionManagerRegistry $userSubscriptionManager
+     * @param GuzzleClientSender              $sender
      */
     public function __construct(
-        WebPushManagerRegistry $webPushManagerRegistry,
+        UserSubscriptionManagerRegistry $userSubscriptionManager,
         GuzzleClientSender $sender
     ) {
-        $this->webPushManagerRegistry = $webPushManagerRegistry;
+        $this->userSubscriptionManager = $userSubscriptionManager;
         $this->sender = $sender;
     }
 
@@ -62,8 +62,7 @@ class NotificationSender implements EventSubscriberInterface
     private function notifyCustomer(Order $order): void
     {
         $customer = $order->getCustomer();
-        $subscriptionManager = $this->webPushManagerRegistry->getManager($customer);
-        $subscriptions = $subscriptionManager->findByUser($customer);
+        $subscriptions = $this->userSubscriptionManager->findByUser($customer);
         $notification = new PushNotification('Congratulations!', [
             PushNotification::BODY => 'Your order has been placed.',
             PushNotification::ICON => '/assets/icon_success.png',
@@ -72,7 +71,7 @@ class NotificationSender implements EventSubscriberInterface
 
         foreach ($responses as $response) {
             if ($response->isExpired()) {
-                $subscriptionManager->delete($response->getSubscription());
+                $this->userSubscriptionManager->delete($response->getSubscription());
             }
         }
     }
@@ -90,11 +89,9 @@ class NotificationSender implements EventSubscriberInterface
 
         $employees = array_unique($employees);
 
-        $subscriptionManager = $this->webPushManagerRegistry->getManager(Employee::class);
-
         $subscriptions = [];
         foreach ($employees as $employee) {
-            foreach ($subscriptionManager->findByUser($employee) as $subscription) {
+            foreach ($this->userSubscriptionManager->findByUser($employee) as $subscription) {
                 $subscriptions[] = $subscription;
             }
         }
@@ -108,7 +105,7 @@ class NotificationSender implements EventSubscriberInterface
 
         foreach ($responses as $response) {
             if ($response->isExpired()) {
-                $subscriptionManager->delete($response->getSubscription());
+                $this->userSubscriptionManager->delete($response->getSubscription());
             }
         }
     }

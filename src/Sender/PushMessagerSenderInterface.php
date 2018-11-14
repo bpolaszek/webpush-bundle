@@ -6,12 +6,8 @@ use BenTools\WebPushBundle\Model\Message\PushMessage;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use BenTools\WebPushBundle\Model\Response\PushResponse;
 
-interface WebPushNotificationSenderInterface
+interface PushMessagerSenderInterface
 {
-
-    const RESPONSE_SUCCESS = 201;
-    const RESPONSE_TOOMANYREQUESTS = 201;
-
     /**
      * Push a notification.
      * The implementation MUST adapt the payload with proper padding, etc.

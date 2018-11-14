@@ -4,7 +4,7 @@ namespace BenTools\WebPushBundle\Tests;
 
 use BenTools\DoctrineStatic\ManagerRegistry;
 use BenTools\WebPushBundle\Action\RegisterSubscriptionAction;
-use BenTools\WebPushBundle\Registry\WebPushManagerRegistry;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
 use BenTools\WebPushBundle\Tests\Classes\TestUser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +23,7 @@ final class RegistrationTest extends KernelTestCase
     {
         /** @var ManagerRegistry $persistence */
         $persistence = self::$kernel->getContainer()->get('doctrine');
-        $registry = self::$kernel->getContainer()->get(WebPushManagerRegistry::class);
+        $registry = self::$kernel->getContainer()->get(UserSubscriptionManagerRegistry::class);
         $em = $persistence->getManagerForClass(TestUser::class);
         $bob = new TestUser('bob');
         $em->persist($bob);

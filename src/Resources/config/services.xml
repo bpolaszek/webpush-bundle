@@ -6,20 +6,25 @@
 
     <services>
 
+        <service id="BenTools\WebPushBundle\Command\WebPushGenerateKeysCommand" class="BenTools\WebPushBundle\Command\WebPushGenerateKeysCommand">
+            <tag name="console.command" />
+        </service>
+
         <service class="BenTools\WebPushBundle\Twig\WebPushTwigExtension" id="BenTools\WebPushBundle\Twig\WebPushTwigExtension">
             <argument type="string">%bentools_webpush.vapid_public_key%</argument>
-            <argument type="service" id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry"/>
+            <argument type="service" id="BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry"/>
             <tag name="twig.extension"/>
         </service>
 
-        <service class="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" />
+        <service id="BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry" class="BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry" />
+        <service id="BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface" alias="BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry" />
 
         <service class="BenTools\WebPushBundle\Action\RegisterSubscriptionAction" id="BenTools\WebPushBundle\Action\RegisterSubscriptionAction" public="true">
-            <argument id="BenTools\WebPushBundle\Registry\WebPushManagerRegistry" type="service"/>
+            <argument id="BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry" type="service"/>
             <tag name="controller.service_arguments"/>
         </service>
 
-        <service class="BenTools\WebPushBundle\Sender\GuzzleClientSender" id="BenTools\WebPushBundle\Sender\GuzzleClientSender">
+        <service class="BenTools\WebPushBundle\Sender\PushMessageSender" id="BenTools\WebPushBundle\Sender\PushMessageSender">
             <argument type="collection">
                 <argument key="VAPID" type="collection">
                     <argument key="subject">%bentools_webpush.vapid_subject%</argument>

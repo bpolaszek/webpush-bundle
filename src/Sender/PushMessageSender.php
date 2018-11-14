@@ -13,7 +13,7 @@ use Minishlink\WebPush\Encryption;
 use Minishlink\WebPush\VAPID;
 use Psr\Http\Message\ResponseInterface;
 
-class GuzzleClientSender implements WebPushNotificationSenderInterface
+class PushMessageSender implements PushMessagerSenderInterface
 {
     /**
      * @var Client

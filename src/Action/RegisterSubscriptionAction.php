@@ -2,7 +2,7 @@
 
 namespace BenTools\WebPushBundle\Action;
 
-use BenTools\WebPushBundle\Registry\WebPushManagerRegistry;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -12,15 +12,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class RegisterSubscriptionAction
 {
     /**
-     * @var WebPushManagerRegistry
+     * @var UserSubscriptionManagerRegistry
      */
     private $registry;
 
     /**
      * RegisterSubscriptionAction constructor.
-     * @param WebPushManagerRegistry $registry
+     * @param UserSubscriptionManagerRegistry $registry
      */
-    public function __construct(WebPushManagerRegistry $registry)
+    public function __construct(UserSubscriptionManagerRegistry $registry)
     {
         $this->registry = $registry;
     }
@@ -84,7 +84,7 @@ final class RegisterSubscriptionAction
         }
 
         $manager = $this->registry->getManager($user);
-        $subscriptionHash = $manager->hash($subscription['endpoint']);
+        $subscriptionHash = $manager->hash($subscription['endpoint'], $user);
 
         if ('DELETE' === $request->getMethod()) {
             $this->unsubscribe($user, $subscriptionHash);

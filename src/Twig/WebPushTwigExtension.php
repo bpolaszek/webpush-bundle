@@ -2,7 +2,7 @@
 
 namespace BenTools\WebPushBundle\Twig;
 
-use BenTools\WebPushBundle\Registry\WebPushManagerRegistry;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
 use Twig\Extension\AbstractExtension;
 use Twig_Extension_GlobalsInterface;
 
@@ -14,13 +14,13 @@ final class WebPushTwigExtension extends AbstractExtension implements Twig_Exten
     private $publicKey;
 
     /**
-     * @var WebPushManagerRegistry
+     * @var UserSubscriptionManagerRegistry
      */
     private $registry;
 
     public function __construct(
         string $publicKey,
-        ?WebPushManagerRegistry $registry = null
+        ?UserSubscriptionManagerRegistry $registry = null
     ) {
         $this->publicKey = $publicKey;
         $this->registry = $registry;

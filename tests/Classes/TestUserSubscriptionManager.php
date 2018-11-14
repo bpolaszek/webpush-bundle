@@ -33,16 +33,16 @@ final class TestUserSubscriptionManager implements UserSubscriptionManagerInterf
             $subscription['endpoint'],
             $subscription['keys']['p256dh'],
             $subscription['keys']['auth'],
-            $this->hash($subscription['endpoint'])
+            $subscriptionHash
         );
     }
 
     /**
      * @inheritDoc
      */
-    public function hash(string $endpoint): string
+    public function hash(string $endpoint, UserInterface $user): string
     {
-        return md5($endpoint); // Encode it as you like
+        return md5($endpoint);
     }
 
     /**
