@@ -10,9 +10,8 @@
             <tag name="console.command" />
         </service>
 
-        <service class="BenTools\WebPushBundle\Twig\WebPushTwigExtension" id="BenTools\WebPushBundle\Twig\WebPushTwigExtension">
+        <service id="BenTools\WebPushBundle\Twig\WebPushTwigExtension" class="BenTools\WebPushBundle\Twig\WebPushTwigExtension">
             <argument type="string">%bentools_webpush.vapid_public_key%</argument>
-            <argument type="service" id="BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry"/>
             <tag name="twig.extension"/>
         </service>
 
