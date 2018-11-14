@@ -4,9 +4,9 @@ namespace BenTools\WebPushBundle\Model\Message;
 
 /**
  * A message is an enveloppe that contain:
- * - An optionnal payload
- * - An optionnal array of options (like TTL, Topic, etc)
- * - An optionnal array of authentication data (if different from the client)
+ * - An optional payload
+ * - An optional array of options (like TTL, Topic, etc)
+ * - An optional array of authentication data (if different from the client)
  */
 final class PushMessage
 {
@@ -15,9 +15,9 @@ final class PushMessage
 
     /**
      * WebPushMessage constructor.
-     * @param null|string $payload - Optionnal - the payload string.
-     * @param array       $options - Optionnal - the message options (TTL, urgency, ...)
-     * @param array       $auth - Optionnal - the message auth information (if different than default)
+     * @param null|string $payload
+     * @param array       $options
+     * @param array       $auth
      */
     public function __construct(?string $payload = null, array $options = [], array $auth = [])
     {
