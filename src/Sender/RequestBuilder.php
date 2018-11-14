@@ -137,7 +137,7 @@ final class RequestBuilder
     /**
      * @param null|string $payload
      * @param string      $contentEncoding
-     * @param             $automaticPadding
+     * @param mixed       $automaticPadding
      * @return null|string
      * @throws \ErrorException
      */

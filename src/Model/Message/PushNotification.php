@@ -76,10 +76,10 @@ final class PushNotification implements JsonSerializable, ArrayAccess
     }
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed $value
      */
-    public function setOption($key, $value): void
+    public function setOption(string $key, $value): void
     {
         if (null === $value) {
             unset($this->options[$key]);
