@@ -11,7 +11,7 @@ use App\Events\OrderEvent;
 use App\Events\OrderEvents;
 use BenTools\WebPushBundle\Model\Message\PushNotification;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
-use BenTools\WebPushBundle\Sender\GuzzleClientSender;
+use BenTools\WebPushBundle\Sender\PushMessageSender;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class NotificationSenderListener implements EventSubscriberInterface
@@ -22,18 +22,18 @@ class NotificationSenderListener implements EventSubscriberInterface
     private $userSubscriptionManager;
 
     /**
-     * @var GuzzleClientSender
+     * @var PushMessageSender
      */
     private $sender;
 
     /**
      * NotificationSender constructor.
      * @param UserSubscriptionManagerRegistry $userSubscriptionManager
-     * @param GuzzleClientSender              $sender
+     * @param PushMessageSender               $sender
      */
     public function __construct(
         UserSubscriptionManagerRegistry $userSubscriptionManager,
-        GuzzleClientSender $sender
+        PushMessageSender $sender
     ) {
         $this->userSubscriptionManager = $userSubscriptionManager;
         $this->sender = $sender;
