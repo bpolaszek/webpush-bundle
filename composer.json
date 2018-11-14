@@ -10,11 +10,26 @@
   ],
   "require": {
     "php": ">=7.1",
-    "minishlink/web-push": "^2.0"
+    "ext-json": "*",
+    "ext-curl": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "minishlink/web-push": "^4.0",
+    "symfony/http-kernel": "^3.0|^4.0"
   },
   "require-dev": {
-    "symfony/var-dumper": "^3.3",
-    "symfony/symfony": "^2.7|^3.0|^4.0"
+    "bentools/doctrine-static": "1.0.x-dev",
+    "nyholm/symfony-bundle-test": "^1.4",
+    "phpunit/phpunit": "^5.0|^6.0|^7.0",
+    "symfony/config": "^4.1",
+    "symfony/dependency-injection": "^3.0|^4.0",
+    "symfony/framework-bundle": "^3.0|^4.0",
+    "symfony/http-foundation": "^3.0|^4.0",
+    "symfony/routing": "^3.0|^4.0",
+    "symfony/security": "^3.0|^4.0",
+    "symfony/var-dumper": "^3.0|^4.0",
+    "symfony/yaml": "^3.0|^4.0",
+    "twig/twig": "~1.0|~2.0"
   },
   "autoload": {
     "psr-4": {
@@ -22,8 +37,11 @@
     }
   },
   "autoload-dev": {
+    "psr-4": {
+      "BenTools\\WebPushBundle\\Tests\\": "tests"
+    },
     "files": [
-      "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php"
+      "vendor/symfony/var-dumper/Resources/functions/dump.php"
     ]
   },
   "config": {

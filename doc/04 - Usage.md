@@ -1,54 +1,113 @@
 ## Now, send notifications!
 
+Here's a sample example of an e-commerce app which will notify both the customer and the related category managers when an order has been placed.
 
 ```php
-# src/AppBundle/Services/NotificationSender.php
+namespace App\Services;
 
-namespace AppBundle\Services;
+use App\Entity\Employee;
+use App\Entity\Order;
+use App\Events\OrderEvent;
+use App\Events\OrderEvents;
+use BenTools\WebPushBundle\Model\Message\PushNotification;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
+use BenTools\WebPushBundle\Sender\GuzzleClientSender;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use AppBundle\Entity\User;
-use BenTools\WebPushBundle\Model\Message\Notification;
-use BenTools\WebPushBundle\Registry\WebPushManagerRegistry;
-use Minishlink\WebPush\WebPush;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-
-class NotificationSender implements ContainerAwareInterface
+class NotificationSenderListener implements EventSubscriberInterface
 {
-    use ContainerAwareTrait;
+    /**
+     * @var UserSubscriptionManagerRegistry
+     */
+    private $userSubscriptionManager;
 
     /**
-     * @param User $user
+     * @var GuzzleClientSender
      */
-    public function sendAwesomeNotification(User $user)
+    private $sender;
+
+    /**
+     * NotificationSender constructor.
+     * @param UserSubscriptionManagerRegistry $userSubscriptionManager
+     * @param GuzzleClientSender              $sender
+     */
+    public function __construct(
+        UserSubscriptionManagerRegistry $userSubscriptionManager,
+        GuzzleClientSender $sender
+    ) {
+        $this->userSubscriptionManager = $userSubscriptionManager;
+        $this->sender = $sender;
+    }
+
+    public static function getSubscribedEvents()
     {
-        $sender = $this->container->get(WebPush::class);
-        $managers = $this->container->get(WebPushManagerRegistry::class);
-        $myUserManager = $managers->getManager($user);
-        foreach ($myUserManager->findByUser($user) as $subscription) {
-            $sender->sendNotification(
-                $subscription->getEndpoint(),
-                $this->createAwesomeNotification(),
-                $subscription->getPublicKey(),
-                $subscription->getAuthToken()
-            );
-        }
-        $sender->flush();
+        return [
+            OrderEvents::PLACED => 'onOrderPlaced',
+        ];
     }
 
     /**
-     * @return Notification
+     * @param OrderEvent $event
      */
-    private function createAwesomeNotification(): Notification
+    public function onOrderPlaced(OrderEvent $event): void
     {
-        return new Notification([
-            'title' => 'Awesome title',
-            'body'  => 'Symfony is great!',
-            'icon'  => 'https://symfony.com/logos/symfony_black_03.png',
-            'data'  => [
-                'link' => 'https://www.symfony.com',
-            ],
+        $order = $event->getOrder();
+        $this->notifyCustomer($order);
+        $this->notifyCategoryManagers($order);
+    }
+
+    /**
+     * @param Order $order
+     */
+    private function notifyCustomer(Order $order): void
+    {
+        $customer = $order->getCustomer();
+        $subscriptions = $this->userSubscriptionManager->findByUser($customer);
+        $notification = new PushNotification('Congratulations!', [
+            PushNotification::BODY => 'Your order has been placed.',
+            PushNotification::ICON => '/assets/icon_success.png',
         ]);
+        $responses = $this->sender->push($notification->createMessage(), $subscriptions);
+
+        foreach ($responses as $response) {
+            if ($response->isExpired()) {
+                $this->userSubscriptionManager->delete($response->getSubscription());
+            }
+        }
+    }
+
+    /**
+     * @param Order $order
+     */
+    private function notifyCategoryManagers(Order $order): void
+    {
+        $products = $order->getProducts();
+        $employees = [];
+        foreach ($products as $product) {
+            $employees[] = $product->getCategoryManager();
+        }
+
+        $employees = array_unique($employees);
+
+        $subscriptions = [];
+        foreach ($employees as $employee) {
+            foreach ($this->userSubscriptionManager->findByUser($employee) as $subscription) {
+                $subscriptions[] = $subscription;
+            }
+        }
+
+        $notification = new PushNotification('A new order has been placed!', [
+            PushNotification::BODY => 'A customer just bought some of your products.',
+            PushNotification::ICON => '/assets/icon_success.png',
+        ]);
+
+        $responses = $this->sender->push($notification->createMessage(), $subscriptions);
+
+        foreach ($responses as $response) {
+            if ($response->isExpired()) {
+                $this->userSubscriptionManager->delete($response->getSubscription());
+            }
+        }
     }
 }
 ```

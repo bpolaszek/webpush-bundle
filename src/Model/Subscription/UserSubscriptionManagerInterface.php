@@ -13,18 +13,20 @@ interface UserSubscriptionManagerInterface
      * @param UserInterface $user
      * @param string        $subscriptionHash
      * @param array         $subscription
+     * @param array         $options
      * @return UserSubscriptionInterface
      */
-    public function factory(UserInterface $user, string $subscriptionHash, array $subscription): UserSubscriptionInterface;
+    public function factory(UserInterface $user, string $subscriptionHash, array $subscription, array $options = []): UserSubscriptionInterface;
 
     /**
      * Return a string representation of the subscription's endpoint.
      * Example: md5($endpoint).
      *
-     * @param array $subscription
+     * @param string             $endpoint
+     * @param UserInterface $user
      * @return string
      */
-    public function hash(string $endpoint): string;
+    public function hash(string $endpoint, UserInterface $user): string;
 
     /**
      * Return the subscription attached to this user.

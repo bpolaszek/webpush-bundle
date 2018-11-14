@@ -41,4 +41,11 @@ interface UserSubscriptionInterface
      * @return string
      */
     public function getAuthToken(): string;
+
+    /**
+     * Content-encoding (default: aesgcm).
+     *
+     * @return string
+     */
+    public function getContentEncoding(): string;
 }

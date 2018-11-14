@@ -2,24 +2,38 @@
 
 namespace BenTools\WebPushBundle\Twig;
 
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Twig_Extension;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
+use Twig\Extension\AbstractExtension;
 use Twig_Extension_GlobalsInterface;
 
-final class WebPushTwigExtension extends Twig_Extension implements Twig_Extension_GlobalsInterface, ContainerAwareInterface
+final class WebPushTwigExtension extends AbstractExtension implements Twig_Extension_GlobalsInterface
 {
-    use ContainerAwareTrait;
+    /**
+     * @var string
+     */
+    private $publicKey;
+
+    /**
+     * @var UserSubscriptionManagerRegistry
+     */
+    private $registry;
+
+    public function __construct(
+        string $publicKey,
+        ?UserSubscriptionManagerRegistry $registry = null
+    ) {
+        $this->publicKey = $publicKey;
+        $this->registry = $registry;
+    }
 
     /**
      * @inheritDoc
      */
     public function getGlobals()
     {
-        $publicKey = $this->container->getParameter('bentools_webpush.public_key');
         return [
-            'bentools_pusher' => [
-                'server_key' => $publicKey ?? null,
+            'bentools_webpush' => [
+                'server_key' => $this->publicKey,
             ],
         ];
     }

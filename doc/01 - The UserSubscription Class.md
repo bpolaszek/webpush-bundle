@@ -1,26 +1,19 @@
-Basically:
-
-* A user can have several subscriptions (you can log in from several browsers)
-* A single subscription can be shared among multiple users (you can log in with several accounts on the same browser).
-
-We need to store these associations.
-
 ## Create your UserSubscription class
 
 First, you have to implement `BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface`. 
 
 It's a simple entity which associates:
 1. Your user entity
-2. The subscription details - it will store the JSON representation of the `Subscription` javascript object.
+2. The subscription details - it will store the JSON representation of the `PushSubscription` javascript object.
 3. A hash of the endpoint (or any string that could help in retrieving it).
 
 You're free to use Doctrine or anything else.
 
 Example class:
 ```php
-# src/AppBundle/Entity/UserSubscription.php
+# src/Entity/UserSubscription.php
 
-namespace AppBundle\Entity;
+namespace App\Entity;
 
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -43,7 +36,7 @@ class UserSubscription implements UserSubscriptionInterface
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -104,7 +97,7 @@ class UserSubscription implements UserSubscriptionInterface
      */
     public function getEndpoint(): string
     {
-        return $this->subscription['endpoint'] ?? null;
+        return $this->subscription['endpoint'];
     }
 
     /**
@@ -112,7 +105,7 @@ class UserSubscription implements UserSubscriptionInterface
      */
     public function getPublicKey(): string
     {
-        return $this->subscription['keys']['p256dh'] ?? null;
+        return $this->subscription['keys']['p256dh'];
     }
 
     /**
@@ -120,7 +113,18 @@ class UserSubscription implements UserSubscriptionInterface
      */
     public function getAuthToken(): string
     {
-        return $this->subscription['keys']['auth'] ?? null;
+        return $this->subscription['keys']['auth'];
+    }
+    
+
+    /**
+     * Content-encoding (default: aesgcm).
+     *
+     * @return string
+     */
+    public function getContentEncoding(): string
+    {
+        return $this->subscription['content-encoding'] ?? 'aesgcm';
     }
 
 }

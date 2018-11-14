@@ -8,11 +8,11 @@ Then, create a class that implements `BenTools\WebPushBundle\Model\Subscription\
 
 Example with Doctrine:
 ```php
-# src/AppBundle/Services/UserSubscriptionManager.php
+# src/Services/UserSubscriptionManager.php
 
-namespace AppBundle\Services;
+namespace App\Services;
 
-use AppBundle\Entity\UserSubscription;
+use App\Entity\UserSubscription;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -37,15 +37,17 @@ class UserSubscriptionManager implements UserSubscriptionManagerInterface
     /**
      * @inheritDoc
      */
-    public function factory(UserInterface $user, string $subscriptionHash, array $subscription): UserSubscriptionInterface
+    public function factory(UserInterface $user, string $subscriptionHash, array $subscription, array $options): UserSubscriptionInterface
     {
+        // $options is an arbitrary array that can be provided through the front-end code.
+        // You can use it to store meta-data about the subscription: the user agent, the referring domain, ...
         return new UserSubscription($user, $subscriptionHash, $subscription);
     }
     
     /**
      * @inheritDoc
      */
-    public function hash(string $endpoint): string {
+    public function hash(string $endpoint, UserInterface $user): string {
         return md5($endpoint); // Encode it as you like    
     }
 
@@ -99,6 +101,21 @@ class UserSubscriptionManager implements UserSubscriptionManagerInterface
     }
 
 }
+```
+
+Now, register your `UserSubscriptionManager` in your `services.yaml`:
+
+```yaml
+# app/config/services.yml (SF3)
+# config/services.yaml (SF4) 
+
+services:
+    App\Services\UserSubscriptionManager:
+        class: App\Services\UserSubscriptionManager
+        arguments:
+            - '@doctrine'
+        tags:
+            - { name: bentools_webpush.subscription_manager, user_class: 'App\Entity\User' }
 ```
 
 Previous: [The UserSubscription Class](01%20-%20The%20UserSubscription%20Class.md)
