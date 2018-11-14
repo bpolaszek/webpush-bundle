@@ -4,7 +4,7 @@ First, you have to implement `BenTools\WebPushBundle\Model\Subscription\UserSubs
 
 It's a simple entity which associates:
 1. Your user entity
-2. The subscription details - it will store the JSON representation of the `Subscription` javascript object.
+2. The subscription details - it will store the JSON representation of the `PushSubscription` javascript object.
 3. A hash of the endpoint (or any string that could help in retrieving it).
 
 You're free to use Doctrine or anything else.
