@@ -14,10 +14,10 @@ final class PushMessage
     private $payload, $options, $auth;
 
     /**
-     * WebPushMessage constructor.
+     * PushMessage constructor.
      * @param null|string $payload
-     * @param array       $options
-     * @param array       $auth
+     * @param array $options
+     * @param array $auth
      */
     public function __construct(?string $payload = null, array $options = [], array $auth = [])
     {

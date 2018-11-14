@@ -34,7 +34,9 @@ final class PushNotification implements JsonSerializable, ArrayAccess
     private $options;
 
     /**
-     * WebPushNotification constructor.
+     * PushNotification constructor.
+     * @param null|string $title
+     * @param array $options
      */
     public function __construct(?string $title, array $options = [])
     {

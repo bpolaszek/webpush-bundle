@@ -41,11 +41,10 @@ class PushMessageSender implements PushMessagerSenderInterface
     private $requestBuilder;
 
     /**
-     * GuzzleClientSender constructor.
-     * @param array                $auth
-     * @param array                $defaultOptions
+     * PushMessageSender constructor.
+     * @param array $auth
+     * @param array $defaultOptions
      * @param ClientInterface|null $client
-     * @throws \ErrorException
      */
     public function __construct(
         array $auth = [],
