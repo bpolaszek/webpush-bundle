@@ -37,7 +37,7 @@ class UserSubscriptionManager implements UserSubscriptionManagerInterface
     /**
      * @inheritDoc
      */
-    public function factory(UserInterface $user, string $subscriptionHash, array $subscription, array $options): UserSubscriptionInterface
+    public function factory(UserInterface $user, string $subscriptionHash, array $subscription, array $options = []): UserSubscriptionInterface
     {
         // $options is an arbitrary array that can be provided through the front-end code.
         // You can use it to store meta-data about the subscription: the user agent, the referring domain, ...
