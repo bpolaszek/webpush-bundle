@@ -20,6 +20,7 @@
   },
   "require-dev": {
     "bentools/doctrine-static": "1.0.x-dev",
+    "doctrine/dbal": "~2.5",
     "nyholm/symfony-bundle-test": "^1.4",
     "phpunit/phpunit": "^5.0|^6.0|^7.0",
     "symfony/config": "^4.0",

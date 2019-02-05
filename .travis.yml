@@ -19,7 +19,6 @@ matrix:
     allow_failures:
         - php: nightly
 
-
 install:
     - composer update $COMPOSER_FLAGS --no-interaction --prefer-dist --no-progress --no-suggest --ansi
 

@@ -51,6 +51,9 @@ final class TestKernel extends Kernel
         ]);
         $loader->load(dirname(__DIR__) . '/Resources/services.yaml');
 
+        if (1 === version_compare(self::VERSION, '4.0')) {
+            $loader->load(dirname(__DIR__) . '/Resources/framework.yaml');
+        }
 
         $c->addCompilerPass(new PublicServicePass());
     }
