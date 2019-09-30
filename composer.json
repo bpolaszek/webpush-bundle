@@ -1,5 +1,6 @@
 {
   "name": "bentools/webpush-bundle",
+  "type": "symfony-bundle",
   "description": "Send push notifications through Web Push Protocol to your Symfony users.",
   "license": "MIT",
   "authors": [

@@ -12,7 +12,7 @@ final class WebPushTwigExtension extends AbstractExtension implements GlobalsInt
      */
     private $publicKey;
 
-    public function __construct(string $publicKey)
+    public function __construct(?string $publicKey)
     {
         $this->publicKey = $publicKey;
     }
