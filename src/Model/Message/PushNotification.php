@@ -111,9 +111,16 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      */
     public function jsonSerialize(): array
     {
+        $options = [];
+        foreach ($this->options as $key=>$option) {
+            if($option !== null){
+                $options[$key] = $option;
+            }
+        }
+
         return [
             'title'   => $this->title,
-            'options' => array_diff($this->options, array_filter($this->options, 'is_null')),
+            'options' => $options
         ];
     }
 
