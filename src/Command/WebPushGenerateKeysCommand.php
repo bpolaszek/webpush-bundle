@@ -3,14 +3,16 @@
 namespace BenTools\WebPushBundle\Command;
 
 use Minishlink\WebPush\VAPID;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\Kernel;
 
-final class WebPushGenerateKeysCommand extends ContainerAwareCommand
+final class WebPushGenerateKeysCommand extends Command
 {
+    protected static $defaultName = 'webpush:generate:keys';
+
     /**
      * {@inheritdoc}
      */
@@ -24,7 +26,7 @@ final class WebPushGenerateKeysCommand extends ContainerAwareCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $keys = VAPID::createVapidKeys();
@@ -50,5 +52,7 @@ bentools_webpush:
         private_key: '{$keys['privateKey']}'    
 EOF
         );
+
+        return 0;
     }
 }

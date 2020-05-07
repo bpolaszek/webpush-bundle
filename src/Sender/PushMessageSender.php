@@ -3,8 +3,8 @@
 namespace BenTools\WebPushBundle\Sender;
 
 use BenTools\WebPushBundle\Model\Message\PushMessage;
-use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use BenTools\WebPushBundle\Model\Response\PushResponse;
+use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -42,16 +42,12 @@ class PushMessageSender implements PushMessagerSenderInterface
 
     /**
      * PushMessageSender constructor.
-     * @param array $auth
-     * @param array $defaultOptions
-     * @param ClientInterface|null $client
      */
     public function __construct(
         array $auth = [],
         array $defaultOptions = [],
         ClientInterface $client = null
     ) {
-
         if (isset($auth['VAPID'])) {
             $auth['VAPID']['validated'] = false;
         }
@@ -62,9 +58,8 @@ class PushMessageSender implements PushMessagerSenderInterface
     }
 
     /**
-     * @param PushMessage $message
-     * @param iterable    $subscriptions
      * @return PushResponse[]
+     *
      * @throws \ErrorException
      * @throws \InvalidArgumentException
      * @throws \LogicException
@@ -100,7 +95,6 @@ class PushMessageSender implements PushMessagerSenderInterface
                     return new PushResponse($subscription, $response->getStatusCode());
                 })
                 ->otherwise(function (\Throwable $reason) use ($subscription) {
-
                     if ($reason instanceof RequestException && $reason->hasResponse()) {
                         return new PushResponse($subscription, $reason->getResponse()->getStatusCode());
                     }
@@ -121,12 +115,9 @@ class PushMessageSender implements PushMessagerSenderInterface
         return $promise->wait();
     }
 
-    /**
-     * @return bool
-     */
     public function isAutomaticPadding(): bool
     {
-        return $this->maxPaddingLength !== 0;
+        return 0 !== $this->maxPaddingLength;
     }
 
     /**
@@ -140,8 +131,6 @@ class PushMessageSender implements PushMessagerSenderInterface
     /**
      * @param int|bool $maxPaddingLength Max padding length
      *
-     * @return self
-     *
      * @throws \Exception
      */
     public function setMaxPaddingLength($maxPaddingLength): self
@@ -150,9 +139,9 @@ class PushMessageSender implements PushMessagerSenderInterface
             throw new \Exception('Automatic padding is too large. Max is '.Encryption::MAX_PAYLOAD_LENGTH.'. Recommended max is '.Encryption::MAX_COMPATIBILITY_PAYLOAD_LENGTH.' for compatibility reasons (see README).');
         } elseif ($maxPaddingLength < 0) {
             throw new \Exception('Padding length should be positive or zero.');
-        } elseif ($maxPaddingLength === true) {
+        } elseif (true === $maxPaddingLength) {
             $this->maxPaddingLength = Encryption::MAX_COMPATIBILITY_PAYLOAD_LENGTH;
-        } elseif ($maxPaddingLength === false) {
+        } elseif (false === $maxPaddingLength) {
             $this->maxPaddingLength = 0;
         } else {
             $this->maxPaddingLength = $maxPaddingLength;
@@ -161,9 +150,6 @@ class PushMessageSender implements PushMessagerSenderInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getDefaultOptions(): array
     {
         return $this->defaultOptions;

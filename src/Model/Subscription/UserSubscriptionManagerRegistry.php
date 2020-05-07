@@ -15,8 +15,6 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     private $registry = [];
 
     /**
-     * @param string                           $userClass
-     * @param UserSubscriptionManagerInterface $userSubscriptionManager
      * @throws \InvalidArgumentException
      */
     public function register(string $userClass, UserSubscriptionManagerInterface $userSubscriptionManager)
@@ -38,7 +36,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
 
     /**
      * @param UserInterface|string $userClass
-     * @return UserSubscriptionManagerInterface
+     *
      * @throws RuntimeException
      * @throws ServiceNotFoundException
      * @throws \InvalidArgumentException
@@ -47,13 +45,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     public function getManager($userClass): UserSubscriptionManagerInterface
     {
         if (!is_a($userClass, UserInterface::class, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Expected class or object that implements %s, %s given',
-                    UserInterface::class,
-                    is_object($userClass) ? get_class($userClass) : gettype($userClass)
-                )
-            );
+            throw new \InvalidArgumentException(sprintf('Expected class or object that implements %s, %s given', UserInterface::class, is_object($userClass) ? get_class($userClass) : gettype($userClass)));
         }
 
         if (is_object($userClass)) {
@@ -73,7 +65,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function factory(UserInterface $user, string $subscriptionHash, array $subscription, array $options = []): UserSubscriptionInterface
     {
@@ -81,7 +73,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function hash(string $endpoint, UserInterface $user): string
     {
@@ -89,7 +81,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getUserSubscription(UserInterface $user, string $subscriptionHash): ?UserSubscriptionInterface
     {
@@ -97,7 +89,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function findByUser(UserInterface $user): iterable
     {
@@ -105,7 +97,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function findByHash(string $subscriptionHash): iterable
     {
@@ -117,7 +109,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function save(UserSubscriptionInterface $userSubscription): void
     {
@@ -125,7 +117,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function delete(UserSubscriptionInterface $userSubscription): void
     {

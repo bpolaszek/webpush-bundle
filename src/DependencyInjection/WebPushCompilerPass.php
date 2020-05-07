@@ -9,7 +9,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class WebPushCompilerPass implements CompilerPassInterface
 {
-
     public function process(ContainerBuilder $container)
     {
         $registry = $container->getDefinition(UserSubscriptionManagerRegistry::class);
