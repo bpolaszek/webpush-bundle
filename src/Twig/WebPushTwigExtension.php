@@ -18,9 +18,9 @@ final class WebPushTwigExtension extends AbstractExtension implements GlobalsInt
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
-    public function getGlobals()
+    public function getGlobals(): array
     {
         return [
             'bentools_webpush' => [

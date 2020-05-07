@@ -5,6 +5,7 @@ namespace BenTools\WebPushBundle\Action;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -18,7 +19,6 @@ final class RegisterSubscriptionAction
 
     /**
      * RegisterSubscriptionAction constructor.
-     * @param UserSubscriptionManagerRegistry $registry
      */
     public function __construct(UserSubscriptionManagerRegistry $registry)
     {
@@ -26,10 +26,6 @@ final class RegisterSubscriptionAction
     }
 
     /**
-     * @param UserInterface $user
-     * @param string        $subscriptionHash
-     * @param array         $subscription
-     * @param array         $options
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
@@ -44,8 +40,6 @@ final class RegisterSubscriptionAction
     }
 
     /**
-     * @param UserInterface $user
-     * @param string        $subscriptionHash
      * @throws BadRequestHttpException
      * @throws \RuntimeException
      */
@@ -54,18 +48,16 @@ final class RegisterSubscriptionAction
         $manager = $this->registry->getManager($user);
         $subscription = $manager->getUserSubscription($user, $subscriptionHash);
         if (null === $subscription) {
-            throw new BadRequestHttpException("Subscription hash not found");
+            throw new BadRequestHttpException('Subscription hash not found');
         }
         $manager->delete($subscription);
     }
 
-    /**
-     * @param Request       $request
-     * @param UserInterface $user
-     * @return Response
-     */
-    public function __invoke(Request $request, UserInterface $user): Response
+    public function __invoke(Request $request, UserInterface $user = null): Response
     {
+        if (null === $user) {
+            throw new AccessDeniedHttpException('Not authenticated.');
+        }
 
         if (!in_array($request->getMethod(), ['POST', 'DELETE'])) {
             throw new MethodNotAllowedHttpException(['POST', 'DELETE']);
