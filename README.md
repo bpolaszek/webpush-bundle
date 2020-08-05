@@ -23,7 +23,7 @@ We assume you have a minimum knowledge of how Push Notifications work, otherwise
 * You have an eCommerce app:
     * Notify your customer their order has been shipped
     * Notify your category manager they sell a product
-    
+
 
 ## Summary
 
@@ -43,7 +43,7 @@ This bundle is just the back-end part of the subscription process. For the front
 PHP7.1+ is required.
 
 ```bash
-composer require bentools/webpush-bundle 0.5.*
+composer require bentools/webpush-bundle 0.6.*
 ```
 
 If you're using Symfony 3, add the bundle to your kernel. With Symfony Flex, this should be done automatically.

@@ -25,8 +25,6 @@ final class PushResponse
 
     /**
      * WebPushResponse constructor.
-     * @param UserSubscriptionInterface $subscription
-     * @param int                       $statusCode
      */
     public function __construct(UserSubscriptionInterface $subscription, int $statusCode)
     {
@@ -34,33 +32,21 @@ final class PushResponse
         $this->statusCode = $statusCode;
     }
 
-    /**
-     * @return UserSubscriptionInterface
-     */
     public function getSubscription(): UserSubscriptionInterface
     {
         return $this->subscription;
     }
 
-    /**
-     * @return int
-     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * @return bool
-     */
     public function isExpired(): bool
     {
         return in_array($this->statusCode, [self::NOT_FOUND, self::GONE]);
     }
 
-    /**
-     * @return bool
-     */
     public function isSuccessFul(): bool
     {
         return self::SUCCESS === $this->statusCode;

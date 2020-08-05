@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class WebPushBundle extends Bundle
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getContainerExtension()
     {

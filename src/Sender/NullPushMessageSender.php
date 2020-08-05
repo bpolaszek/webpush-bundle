@@ -9,7 +9,7 @@ final class NullPushMessageSender implements PushMessagerSenderInterface
     /**
      * Does nothing.
      *
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function push(PushMessage $message, iterable $subscriptions): iterable
     {
