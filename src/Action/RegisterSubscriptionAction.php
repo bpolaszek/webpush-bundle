@@ -3,9 +3,9 @@
 namespace BenTools\WebPushBundle\Action;
 
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry;
+use BenTools\WebPushBundle\Model\User\AnonymousUser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -49,10 +49,6 @@ final class RegisterSubscriptionAction
 
     public function __invoke(Request $request, UserInterface $user = null): Response
     {
-        if (null === $user) {
-            throw new AccessDeniedHttpException('Not authenticated.');
-        }
-
         if (!in_array($request->getMethod(), ['POST', 'DELETE'])) {
             throw new MethodNotAllowedHttpException(['POST', 'DELETE']);
         }
@@ -60,6 +56,7 @@ final class RegisterSubscriptionAction
         $data = json_decode($request->getContent(), true);
         $subscription = $data['subscription'] ?? [];
         $options = $data['options'] ?? [];
+        $user = $user ?? new AnonymousUser();
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new BadRequestHttpException(json_last_error_msg());
