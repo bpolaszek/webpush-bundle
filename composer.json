@@ -15,13 +15,13 @@
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-openssl": "*",
-    "guzzlehttp/guzzle": "~6.0",
-    "minishlink/web-push": "~4.0|~5.0",
+    "guzzlehttp/guzzle": "~6.0|~7.0",
+    "minishlink/web-push": "~4.0|~5.0|~6.0",
     "symfony/http-kernel": "~3.0|~4.0|~5.0"
   },
   "require-dev": {
     "bentools/doctrine-static": "1.0.x-dev",
-    "doctrine/dbal": "~2.5",
+    "doctrine/dbal": "~2.5 <=2.9",
     "nyholm/symfony-bundle-test": "~1.4",
     "phpunit/phpunit": "~5.0|~6.0|~7.0",
     "symfony/config": "~4.0",
