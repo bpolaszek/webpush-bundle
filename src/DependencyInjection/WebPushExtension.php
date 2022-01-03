@@ -32,7 +32,7 @@ class WebPushExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'bentools_webpush';
     }

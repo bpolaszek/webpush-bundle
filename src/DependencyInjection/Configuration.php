@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         if (Kernel::MAJOR_VERSION < 4) {
             $treeBuilder = new TreeBuilder();

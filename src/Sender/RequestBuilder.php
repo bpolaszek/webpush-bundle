@@ -6,7 +6,6 @@ use Base64Url\Base64Url;
 use BenTools\WebPushBundle\Model\Message\PushMessage;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use GuzzleHttp\Psr7\Request;
-use function GuzzleHttp\Psr7\stream_for;
 use GuzzleHttp\Psr7\Uri;
 use Minishlink\WebPush\Encryption;
 use Minishlink\WebPush\Utils;
@@ -56,7 +55,7 @@ final class RequestBuilder
             $content = $encryptionContentCodingHeader.$encrypted['cipherText'];
 
             return $request
-                ->withBody(stream_for($content))
+                ->withBody(\GuzzleHttp\Psr7\Utils::streamFor($content))
                 ->withHeader('Content-Length', Utils::safeStrlen($content));
         }
 
