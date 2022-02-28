@@ -5,6 +5,8 @@ namespace BenTools\WebPushBundle\Model\Message;
 use ArrayAccess;
 use JsonSerializable;
 
+use function is_array;
+
 final class PushNotification implements JsonSerializable, ArrayAccess
 {
     const BODY = 'body';
@@ -89,7 +91,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
     {
         return [
             'title' => $this->title,
-            'options' => array_diff($this->options, array_filter($this->options, 'is_null')),
+            'options' => self::sanitize($this->options),
         ];
     }
 
@@ -174,5 +176,21 @@ final class PushNotification implements JsonSerializable, ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->options[$offset]);
+    }
+
+    private static function sanitize($input)
+    {
+        if (is_array($input)) {
+            foreach ($input as $key => $value) {
+                if (null === $value) {
+                    unset($input[$key]);
+                }
+                if (is_array($value)) {
+                    $input[$key] = self::sanitize($input[$key]);
+                }
+            }
+        }
+
+        return $input;
     }
 }
