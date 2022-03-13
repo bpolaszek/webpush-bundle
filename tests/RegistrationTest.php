@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class RegistrationTest extends KernelTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         static::bootKernel();
     }
@@ -29,7 +29,6 @@ final class RegistrationTest extends KernelTestCase
         $em->persist($bob);
         $em->flush();
         $this->assertNotNull($em->find(TestUser::class, 'bob'));
-
 
         $register = self::$kernel->getContainer()->get(RegisterSubscriptionAction::class);
 

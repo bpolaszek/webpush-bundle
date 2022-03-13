@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 final class BundleTest extends KernelTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         static::bootKernel();
     }
@@ -38,10 +38,10 @@ final class BundleTest extends KernelTestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
      */
     public function unknown_manager_raises_exception()
     {
+        $this->expectException(\InvalidArgumentException::class);
         self::$kernel->getContainer()->get(UserSubscriptionManagerRegistry::class)->getManager(Foo::class);
     }
 }
