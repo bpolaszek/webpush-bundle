@@ -155,7 +155,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->options[$offset] = $value;
     }
