@@ -173,7 +173,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->options[$offset]);
     }
