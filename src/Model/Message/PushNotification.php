@@ -116,7 +116,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->options);
     }
@@ -155,7 +155,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->options[$offset] = $value;
     }
@@ -173,7 +173,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->options[$offset]);
     }
