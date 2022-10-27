@@ -1,0 +1,40 @@
+name: CI
+on:
+  push: ~
+  pull_request: ~
+
+env:
+  COMPOSER_FLAGS: "--prefer-stable"
+  
+jobs:
+  ci_job:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: ['ubuntu-latest']
+        php-versions: ['7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          ini-values: post_max_size=256M, max_execution_time=180
+
+      # Legacy PHP versions ^7.1
+      - name: Install Dependencies
+        if: ${{ matrix.php-versions < '8.0' }}
+        run: composer update $COMPOSER_FLAGS --no-interaction --prefer-dist --no-progress --ansi
+        env:
+          COMPOSER_FLAGS: "--prefer-lowest --prefer-stable"
+
+      # Modern PHP versions >= 8.0
+      - name: Install Dependencies
+        if: ${{ matrix.php-versions >= '8.0' }}
+        run: composer update $COMPOSER_FLAGS --no-interaction --prefer-dist --no-progress --ansi
+
+      - name: Process the tests
+        run: vendor/bin/phpunit
