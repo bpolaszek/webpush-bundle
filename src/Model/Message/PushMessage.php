@@ -10,19 +10,14 @@ namespace BenTools\WebPushBundle\Model\Message;
  */
 final class PushMessage
 {
-    private $payload;
-    private $options;
-    private $auth;
-
     /**
      * PushMessage constructor.
      */
-    public function __construct(?string $payload = null, array $options = [], array $auth = [])
-    {
-        $this->payload = $payload;
-        $this->options = $options;
-        $this->auth = $auth;
-    }
+    public function __construct(
+        private ?string $payload = null,
+        private array $options   = [],
+        private array $auth      = [],
+    ) {}
 
     public function setPayload(?string $payload): void
     {
