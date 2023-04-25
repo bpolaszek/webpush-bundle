@@ -1,7 +1,6 @@
 [![Latest Stable Version](https://poser.pugx.org/bentools/webpush-bundle/v/stable)](https://packagist.org/packages/bentools/webpush-bundle)
 [![License](https://poser.pugx.org/bentools/webpush-bundle/license)](https://packagist.org/packages/bentools/webpush-bundle)
-[![Build Status](https://img.shields.io/travis/bpolaszek/webpush-bundle/master.svg?style=flat-square)](https://travis-ci.org/bpolaszek/webpush-bundle)
-[![Quality Score](https://img.shields.io/scrutinizer/g/bpolaszek/webpush-bundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/bpolaszek/webpush-bundle)
+[![CI](https://github.com/bpolaszek/webpush-bundle/actions/workflows/ci.yml/badge.svg)](https://github.com/bpolaszek/webpush-bundle/actions/workflows/ci.yml)
 [![Total Downloads](https://poser.pugx.org/bentools/webpush-bundle/downloads)](https://packagist.org/packages/bentools/webpush-bundle)
 
 # Webpush Bundle
