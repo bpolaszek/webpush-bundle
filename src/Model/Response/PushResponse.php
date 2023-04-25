@@ -14,23 +14,12 @@ final class PushResponse
     const TOO_MANY_REQUESTS = 429;
 
     /**
-     * @var int
-     */
-    private $statusCode;
-
-    /**
-     * @var UserSubscriptionInterface
-     */
-    private $subscription;
-
-    /**
      * WebPushResponse constructor.
      */
-    public function __construct(UserSubscriptionInterface $subscription, int $statusCode)
-    {
-        $this->subscription = $subscription;
-        $this->statusCode = $statusCode;
-    }
+    public function __construct(
+        private UserSubscriptionInterface $subscription,
+        private int $statusCode,
+    ) {}
 
     public function getSubscription(): UserSubscriptionInterface
     {

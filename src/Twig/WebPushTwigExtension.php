@@ -7,15 +7,9 @@ use Twig\Extension\GlobalsInterface;
 
 final class WebPushTwigExtension extends AbstractExtension implements GlobalsInterface
 {
-    /**
-     * @var string
-     */
-    private $publicKey;
-
-    public function __construct(?string $publicKey)
-    {
-        $this->publicKey = $publicKey;
-    }
+    public function __construct(
+        private ?string $publicKey,
+    ) {}
 
     /**
      * {@inheritdoc}

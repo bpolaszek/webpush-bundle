@@ -13,16 +13,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 final class RegisterSubscriptionAction
 {
     /**
-     * @var UserSubscriptionManagerRegistry
-     */
-    private $registry;
-
-    /**
      * RegisterSubscriptionAction constructor.
      */
-    public function __construct(UserSubscriptionManagerRegistry $registry)
+    public function __construct(private readonly UserSubscriptionManagerRegistry $registry)
     {
-        $this->registry = $registry;
     }
 
     /**
@@ -31,7 +25,7 @@ final class RegisterSubscriptionAction
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      */
-    private function subscribe(UserInterface $user, string $subscriptionHash, array $subscription, array $options = [])
+    private function subscribe(UserInterface $user, string $subscriptionHash, array $subscription, array $options = []): void
     {
         $manager = $this->registry->getManager($user);
         $userSubscription = $manager->getUserSubscription($user, $subscriptionHash)
@@ -43,7 +37,7 @@ final class RegisterSubscriptionAction
      * @throws BadRequestHttpException
      * @throws \RuntimeException
      */
-    private function unsubscribe(UserInterface $user, string $subscriptionHash)
+    private function unsubscribe(UserInterface $user, string $subscriptionHash): void
     {
         $manager = $this->registry->getManager($user);
         $subscription = $manager->getUserSubscription($user, $subscriptionHash);

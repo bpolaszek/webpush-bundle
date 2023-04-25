@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 final class WebPushCompilerPass implements CompilerPassInterface
 {
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $registry = $container->getDefinition(UserSubscriptionManagerRegistry::class);
         $taggedSubscriptionManagers = $container->findTaggedServiceIds('bentools_webpush.subscription_manager');
