@@ -104,7 +104,7 @@ class PushMessageSender implements PushMessagerSenderInterface
             ;
         }
 
-        $promise = Promise\settle($promises)
+        $promise = Promise\Utils::settle($promises)
             ->then(function ($results) {
                 foreach ($results as $subscriptionHash => $promise) {
                     yield $subscriptionHash => $promise['value'] ?? $promise['reason'];
