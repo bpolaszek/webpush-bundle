@@ -12,12 +12,12 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
     /**
      * @var UserSubscriptionManagerInterface[]
      */
-    private $registry = [];
+    private array $registry = [];
 
     /**
      * @throws \InvalidArgumentException
      */
-    public function register(string $userClass, UserSubscriptionManagerInterface $userSubscriptionManager)
+    public function register(string $userClass, UserSubscriptionManagerInterface $userSubscriptionManager): void
     {
         if (!is_a($userClass, UserInterface::class, true)) {
             throw new \InvalidArgumentException(sprintf('Expected class implementing %s, %s given', UserInterface::class, $userClass));
@@ -42,7 +42,7 @@ final class UserSubscriptionManagerRegistry implements UserSubscriptionManagerIn
      * @throws \InvalidArgumentException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      */
-    public function getManager($userClass): UserSubscriptionManagerInterface
+    public function getManager(UserInterface|string $userClass): UserSubscriptionManagerInterface
     {
         if (!is_a($userClass, UserInterface::class, true)) {
             throw new \InvalidArgumentException(sprintf('Expected class or object that implements %s, %s given', UserInterface::class, is_object($userClass) ? get_class($userClass) : gettype($userClass)));

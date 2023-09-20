@@ -1,7 +1,6 @@
 [![Latest Stable Version](https://poser.pugx.org/bentools/webpush-bundle/v/stable)](https://packagist.org/packages/bentools/webpush-bundle)
 [![License](https://poser.pugx.org/bentools/webpush-bundle/license)](https://packagist.org/packages/bentools/webpush-bundle)
-[![Build Status](https://img.shields.io/travis/bpolaszek/webpush-bundle/master.svg?style=flat-square)](https://travis-ci.org/bpolaszek/webpush-bundle)
-[![Quality Score](https://img.shields.io/scrutinizer/g/bpolaszek/webpush-bundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/bpolaszek/webpush-bundle)
+[![CI](https://github.com/bpolaszek/webpush-bundle/actions/workflows/ci.yml/badge.svg)](https://github.com/bpolaszek/webpush-bundle/actions/workflows/ci.yml)
 [![Total Downloads](https://poser.pugx.org/bentools/webpush-bundle/downloads)](https://packagist.org/packages/bentools/webpush-bundle)
 
 # Webpush Bundle
@@ -43,7 +42,7 @@ This bundle is just the back-end part of the subscription process. For the front
 PHP7.1+ is required.
 
 ```bash
-composer require bentools/webpush-bundle 0.6.*
+composer require bentools/webpush-bundle 0.8.*
 ```
 
 If you're using Symfony 3, add the bundle to your kernel. With Symfony Flex, this should be done automatically.

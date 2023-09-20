@@ -25,6 +25,7 @@ final class WebPushGenerateKeysCommand extends Command
 
     /**
      * {@inheritdoc}
+     * @throws \ErrorException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

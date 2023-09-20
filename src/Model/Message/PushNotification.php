@@ -5,6 +5,8 @@ namespace BenTools\WebPushBundle\Model\Message;
 use ArrayAccess;
 use JsonSerializable;
 
+use function is_array;
+
 final class PushNotification implements JsonSerializable, ArrayAccess
 {
     const BODY = 'body';
@@ -23,23 +25,12 @@ final class PushNotification implements JsonSerializable, ArrayAccess
     const TIMESTAMP = 'timestamp';
 
     /**
-     * @var string|null
-     */
-    private $title;
-
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
      * PushNotification constructor.
      */
-    public function __construct(?string $title, array $options = [])
-    {
-        $this->title = $title;
-        $this->options = $options;
-    }
+    public function __construct(
+        private ?string $title,
+         private array $options = [],
+    ) {}
 
     public function getTitle(): ?string
     {
@@ -61,10 +52,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
         $this->options = $options;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setOption(string $key, $value): void
+    public function setOption(string $key, mixed $value): void
     {
         if (null === $value) {
             unset($this->options[$key]);
@@ -75,7 +63,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
         $this->options[$key] = $value;
     }
 
-    public function getOption($key)
+    public function getOption(string $key): mixed
     {
         return $this->options[$key] ?? null;
     }
@@ -89,7 +77,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
     {
         return [
             'title' => $this->title,
-            'options' => array_diff($this->options, array_filter($this->options, 'is_null')),
+            'options' => self::sanitize($this->options),
         ];
     }
 
@@ -114,7 +102,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->options);
     }
@@ -132,7 +120,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->options[$offset] ?? null;
     }
@@ -153,7 +141,7 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->options[$offset] = $value;
     }
@@ -171,8 +159,24 @@ final class PushNotification implements JsonSerializable, ArrayAccess
      *
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->options[$offset]);
+    }
+
+    private static function sanitize(mixed $input): mixed
+    {
+        if (is_array($input)) {
+            foreach ($input as $key => $value) {
+                if (null === $value) {
+                    unset($input[$key]);
+                }
+                if (is_array($value)) {
+                    $input[$key] = self::sanitize($input[$key]);
+                }
+            }
+        }
+
+        return $input;
     }
 }
