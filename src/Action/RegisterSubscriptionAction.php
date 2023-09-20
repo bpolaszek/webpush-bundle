@@ -56,7 +56,7 @@ final class RegisterSubscriptionAction
         $data = json_decode($request->getContent(), true);
         $subscription = $data['subscription'] ?? [];
         $options = $data['options'] ?? [];
-        $user = $user ?? new AnonymousUser();
+        $user ??= new AnonymousUser();
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new BadRequestHttpException(json_last_error_msg());
