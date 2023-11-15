@@ -16,7 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 class PushMessageSender implements PushMessagerSenderInterface
 {
     /**
-     * @var Client
+     * @var ClientInterface
      */
     private $client;
 

@@ -21,8 +21,9 @@ final class TestUser implements UserInterface
         return $this->userName;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
+        return [];
     }
 
     public function getPassword()
@@ -35,5 +36,10 @@ final class TestUser implements UserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->userName;
     }
 }

@@ -26,7 +26,7 @@ final class TestKernel extends Kernel
         $this->logDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $uniqid . DIRECTORY_SEPARATOR . 'logs';
     }
 
-    public function registerBundles()
+    public function registerBundles(): \Traversable|array
     {
         return [
             new FrameworkBundle(),
@@ -34,7 +34,7 @@ final class TestKernel extends Kernel
         ];
     }
 
-    protected function configureRoutes(RouteCollectionBuilder $routes)
+    protected function configureRoutes(): void
     {
     }
 
@@ -58,12 +58,12 @@ final class TestKernel extends Kernel
         $c->addCompilerPass(new PublicServicePass());
     }
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         return $this->cacheDir;
     }
 
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return $this->logDir;
     }

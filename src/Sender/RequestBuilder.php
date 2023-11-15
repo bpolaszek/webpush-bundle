@@ -31,7 +31,7 @@ final class RequestBuilder
     ): RequestInterface {
         $request = new Request('POST', $subscription->getEndpoint());
         $request = $this->withOptionalHeaders($request, $message);
-        $request = $request->withHeader('TTL', $ttl);
+        $request = $request->withHeader('TTL', (string) $ttl);
 
         if (null !== $message->getPayload() && null !== $subscription->getPublicKey() && null !== $subscription->getAuthToken()) {
             $request = $request
@@ -57,11 +57,11 @@ final class RequestBuilder
 
             return $request
                 ->withBody(GuzzleUtils::streamFor($content))
-                ->withHeader('Content-Length', Utils::safeStrlen($content));
+                ->withHeader('Content-Length', (string) Utils::safeStrlen($content));
         }
 
         return $request
-            ->withHeader('Content-Length', 0);
+            ->withHeader('Content-Length', '0');
     }
 
     /**

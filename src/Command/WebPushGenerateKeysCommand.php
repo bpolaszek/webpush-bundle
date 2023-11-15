@@ -4,25 +4,15 @@ namespace BenTools\WebPushBundle\Command;
 
 use Minishlink\WebPush\VAPID;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\Kernel;
 
+#[AsCommand(name:"webpush:generate:keys", description:"Generate your VAPID keys for bentools/webpush.")]
 final class WebPushGenerateKeysCommand extends Command
 {
-    protected static $defaultName = 'webpush:generate:keys';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
-    {
-        $this
-            ->setName('webpush:generate:keys')
-            ->setDescription('Generate your VAPID keys for bentools/webpush.');
-    }
-
     /**
      * {@inheritdoc}
      * @throws \ErrorException
@@ -36,7 +26,7 @@ final class WebPushGenerateKeysCommand extends Command
         $io->writeln(sprintf('Your private key is: <info>%s</info>', $keys['privateKey']));
         $io->newLine(2);
 
-        if (-1 === version_compare(Kernel::VERSION, 4)) {
+        if (-1 === version_compare(Kernel::VERSION, '4')) {
             $io->writeln('Update <info>app/config/config.yml</info>:');
             $io->newLine(1);
             $io->writeln('<info># app/config/config.yml</info>');
