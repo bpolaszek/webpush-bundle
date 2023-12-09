@@ -15,6 +15,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class PushMessageSender implements PushMessagerSenderInterface
 {
+    const DEFAULT_TIMEOUT = 30;
+
     /**
      * @var Client
      */
@@ -90,7 +92,7 @@ class PushMessageSender implements PushMessagerSenderInterface
                 $request = $this->requestBuilder->withGCMAuthentication($request, $auth['GCM']);
             }
 
-            $promises[$subscriptionHash] = $this->client->sendAsync($request)
+            $promises[$subscriptionHash] = $this->client->sendAsync($request, ['timeout' => self::DEFAULT_TIMEOUT])
                 ->then(function (ResponseInterface $response) use ($subscription) {
                     return new PushResponse($subscription, $response->getStatusCode());
                 })
