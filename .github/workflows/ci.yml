@@ -5,14 +5,14 @@ on:
 
 env:
   COMPOSER_FLAGS: "--prefer-stable"
-  
+
 jobs:
   ci_job:
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
         operating-system: ['ubuntu-latest']
-        php-versions: ['8.1', '8.2']
+        php-versions: ['8.1', '8.2', '8.3']
 
     steps:
       - name: Checkout
@@ -29,3 +29,13 @@ jobs:
 
       - name: Process the tests
         run: vendor/bin/phpunit
+
+      - name: Tests with lowest posible packages
+        run: |
+          composer update $COMPOSER_FLAGS --no-interaction --prefer-dist --prefer-lowest --no-progress --ansi
+          vendor/bin/phpunit
+
+      - name: Tests with highest posible packages
+        run: |
+          composer update $COMPOSER_FLAGS --no-interaction --prefer-dist --prefer-highest --no-progress --ansi
+          vendor/bin/phpunit
