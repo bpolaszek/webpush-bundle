@@ -15,15 +15,15 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-openssl": "*",
-        "guzzlehttp/guzzle": "~6.0|~7.0",
-        "minishlink/web-push": "~4.0|~5.0|~6.0|~7.0",
-        "symfony/http-kernel": "~3.0|~4.0|~5.0|~6.0"
+        "guzzlehttp/guzzle": "^6.5.8|^7.4",
+        "minishlink/web-push": "~6.0|~7.0|~8.0",
+        "symfony/http-kernel": "^4.4.50|^5.4.20|^6.0"
     },
     "require-dev": {
         "bentools/doctrine-static": "1.0.x-dev",
         "doctrine/dbal": "~2.5 <=2.9",
         "nyholm/symfony-bundle-test": "~1.8",
-        "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0|~9.0",
+        "phpunit/phpunit": "^8.5.38|~9.0",
         "symfony/config": "~4.0|~5.0|~6.0",
         "symfony/dependency-injection": "~3.0|~4.0|~5.0|~6.0",
         "symfony/framework-bundle": "~3.0|~4.0|~5.0|~6.0",
@@ -32,7 +32,8 @@
         "symfony/security": "~3.0|~4.0|~5.0|~6.0",
         "symfony/var-dumper": "~3.0|~4.0|~5.0|~6.0",
         "symfony/yaml": "~3.0|~4.0|~5.0|~6.0",
-        "twig/twig": "~1.0|~2.0"
+        "twig/twig": "~1.0|~2.0",
+        "web-token/jwt-util-ecc": ">=2.1"
     },
     "autoload": {
         "psr-4": {
