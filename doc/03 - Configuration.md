@@ -7,9 +7,15 @@
 # config/packages/bentools_webpush.yaml (SF4) 
 bentools_webpush:
     settings:
+        # subject: <URI>
         public_key: 'your_public_key'
         private_key: 'your_private_key'
 ```
+
+The subject is optional, with a fallback being `router.request_context.host`. 
+You may need to define it explicitly if you are working in a CLI context.
+
+Note that Apple requires the subject to be an URL or a mailto URL.
 
 #### Update your router:
 ```yaml
