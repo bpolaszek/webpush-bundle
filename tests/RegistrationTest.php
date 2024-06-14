@@ -22,15 +22,16 @@ final class RegistrationTest extends KernelTestCase
     public function registration_works()
     {
         /** @var ManagerRegistry $persistence */
-        $persistence = self::$kernel->getContainer()->get('doctrine');
-        $registry = self::$kernel->getContainer()->get(UserSubscriptionManagerRegistry::class);
+        $persistence = self::getContainer()->get('doctrine');
+        $registry = self::getContainer()->get(UserSubscriptionManagerRegistry::class);
         $em = $persistence->getManagerForClass(TestUser::class);
         $bob = new TestUser('bob');
         $em->persist($bob);
         $em->flush();
         $this->assertNotNull($em->find(TestUser::class, 'bob'));
 
-        $register = self::$kernel->getContainer()->get(RegisterSubscriptionAction::class);
+        /** @var RegisterSubscriptionAction $register */
+        $register = self::getContainer()->get(RegisterSubscriptionAction::class);
 
         $rawSubscriptionData = [
             'subscription' => [
