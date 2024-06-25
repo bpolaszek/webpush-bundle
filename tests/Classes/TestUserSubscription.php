@@ -7,47 +7,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 final class TestUserSubscription implements UserSubscriptionInterface
 {
-
-    private $id;
-
-    /**
-     * @var UserInterface
-     */
-    private $user;
-
-    /**
-     * @var string
-     */
-    private $endpoint;
-
-    /**
-     * @var string
-     */
-    private $publicKey;
-
-    /**
-     * @var string
-     */
-    private $authtoken;
-
-    /**
-     * @var string
-     */
-    private $subscriptionHash;
+    private string $id;
 
     public function __construct(
-        UserInterface $user,
-        string $endpoint,
-        string $publicKey,
-        string $authtoken,
-        string $subscriptionHash
+        private UserInterface $user,
+        private string $endpoint,
+        private string $publicKey,
+        private string $authtoken,
+        private string $subscriptionHash
     ) {
-        $this->id = $user->getUsername();
-        $this->user = $user;
-        $this->endpoint = $endpoint;
-        $this->publicKey = $publicKey;
-        $this->authtoken = $authtoken;
-        $this->subscriptionHash = $subscriptionHash;
+        $this->id = $user->getUserIdentifier();
     }
 
     public function getUser(): UserInterface

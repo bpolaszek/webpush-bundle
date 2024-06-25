@@ -17,31 +17,31 @@ final class BundleTest extends KernelTestCase
     /**
      * @test
      */
-    public function parameters_are_set()
+    public function parameters_are_set(): void
     {
-        $this->assertEquals('this_is_a_private_key', self::$kernel->getContainer()->getParameter('bentools_webpush.vapid_private_key'));
-        $this->assertEquals('this_is_a_public_key', self::$kernel->getContainer()->getParameter('bentools_webpush.vapid_public_key'));
-        $this->assertTrue(self::$kernel->getContainer()->has(UserSubscriptionManagerRegistry::class));
+        $this->assertEquals('this_is_a_private_key', self::getContainer()->getParameter('bentools_webpush.vapid_private_key'));
+        $this->assertEquals('this_is_a_public_key', self::getContainer()->getParameter('bentools_webpush.vapid_public_key'));
+        $this->assertTrue(self::getContainer()->has(UserSubscriptionManagerRegistry::class));
     }
 
     /**
      * @test
      */
-    public function manager_is_found()
+    public function manager_is_found(): void
     {
         // Find by class name
-        $this->assertInstanceOf(TestUserSubscriptionManager::class, self::$kernel->getContainer()->get(UserSubscriptionManagerRegistry::class)->getManager(TestUser::class));
+        $this->assertInstanceOf(TestUserSubscriptionManager::class, self::getContainer()->get(UserSubscriptionManagerRegistry::class)->getManager(TestUser::class));
 
         // Find by object
-        $this->assertInstanceOf(TestUserSubscriptionManager::class, self::$kernel->getContainer()->get(UserSubscriptionManagerRegistry::class)->getManager(new TestUser('foo')));
+        $this->assertInstanceOf(TestUserSubscriptionManager::class, self::getContainer()->get(UserSubscriptionManagerRegistry::class)->getManager(new TestUser('foo')));
     }
 
     /**
      * @test
      */
-    public function unknown_manager_raises_exception()
+    public function unknown_manager_raises_exception(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        self::$kernel->getContainer()->get(UserSubscriptionManagerRegistry::class)->getManager(Foo::class);
+        self::getContainer()->get(UserSubscriptionManagerRegistry::class)->getManager(Foo::class);
     }
 }

@@ -39,13 +39,11 @@ This bundle is just the back-end part of the subscription process. For the front
 
 ### Composer is your friend:
 
-PHP7.1+ is required.
+PHP8.1+ is required.
 
 ```bash
 composer require bentools/webpush-bundle
 ```
-
-If you're using Symfony 3, add the bundle to your kernel. With Symfony Flex, this should be done automatically.
 
 ⚠️ _We aren't on stable version yet - expect some changes._
 

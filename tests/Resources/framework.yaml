@@ -1,3 +1,4 @@
 framework:
+    test: true
     cache:
         default_pdo_provider: ~

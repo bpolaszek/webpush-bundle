@@ -15,25 +15,23 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-openssl": "*",
-        "guzzlehttp/guzzle": "^6.5.8|^7.4",
-        "minishlink/web-push": "~6.0|~7.0|~8.0",
-        "symfony/http-kernel": "^4.4.50|^5.4.20|^6.0"
+        "guzzlehttp/guzzle": "^6.5.8 || ^7.4",
+        "minishlink/web-push": "^6.0.7 || ^7.0 || ^8.0",
+        "symfony/http-kernel": "^5.4.20 || ^6.0 || ^7.0"
     },
     "require-dev": {
         "bentools/doctrine-static": "1.0.x-dev",
-        "doctrine/dbal": "~2.5 <=2.9",
-        "nyholm/symfony-bundle-test": "~1.8",
-        "phpunit/phpunit": "^8.5.38|~9.0",
-        "symfony/config": "~4.0|~5.0|~6.0",
-        "symfony/dependency-injection": "~3.0|~4.0|~5.0|~6.0",
-        "symfony/framework-bundle": "~3.0|~4.0|~5.0|~6.0",
-        "symfony/http-foundation": "~3.0|~4.0|~5.0|~6.0",
-        "symfony/routing": "~3.0|~4.0|~5.0|~6.0",
-        "symfony/security": "~3.0|~4.0|~5.0|~6.0",
-        "symfony/var-dumper": "~3.0|~4.0|~5.0|~6.0",
-        "symfony/yaml": "~3.0|~4.0|~5.0|~6.0",
-        "twig/twig": "~1.0|~2.0",
-        "web-token/jwt-util-ecc": ">=2.1"
+        "doctrine/dbal": "^2.9 || ^3.0",
+        "phpunit/phpunit": "^9.0",
+        "symfony/config": "^5.4 || ^6.0 || ^7.0",
+        "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
+        "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0",
+        "symfony/http-foundation": "^5.4 || ^6.0 || ^7.0",
+        "symfony/routing": "^5.4 || ^6.0 || ^7.0",
+        "symfony/security-core": "^5.4 || ^6.0 || ^7.0",
+        "symfony/var-dumper": "^5.4 || ^6.0 || ^7.0",
+        "symfony/yaml": "^5.4 || ^6.0 || ^7.0",
+        "twig/twig": "^2.0 || ^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -43,10 +41,7 @@
     "autoload-dev": {
         "psr-4": {
             "BenTools\\WebPushBundle\\Tests\\": "tests"
-        },
-        "files": [
-            "vendor/symfony/var-dumper/Resources/functions/dump.php"
-        ]
+        }
     },
     "config": {
         "sort-packages": true
