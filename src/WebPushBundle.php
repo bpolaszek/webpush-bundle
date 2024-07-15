@@ -18,7 +18,7 @@ class WebPushBundle extends Bundle
         return new WebPushExtension();
     }
 
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new WebPushCompilerPass());
     }

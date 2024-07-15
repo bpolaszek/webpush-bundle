@@ -15,7 +15,7 @@ namespace App\Services;
 use App\Entity\UserSubscription;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionInterface;
 use BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserSubscriptionManager implements UserSubscriptionManagerInterface
