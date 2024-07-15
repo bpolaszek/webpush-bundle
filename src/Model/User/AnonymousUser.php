@@ -35,4 +35,9 @@ final class AnonymousUser implements UserInterface
     public function eraseCredentials(): void
     {
     }
+
+    public function getUserIdentifier(): string
+    {
+        return '';
+    }
 }
