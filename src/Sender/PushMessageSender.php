@@ -48,7 +48,7 @@ class PushMessageSender implements PushMessagerSenderInterface
     public function __construct(
         array $auth = [],
         array $defaultOptions = [],
-        ClientInterface $client = null
+        ?ClientInterface $client = null
     ) {
         if (isset($auth['VAPID'])) {
             $auth['VAPID']['validated'] = false;

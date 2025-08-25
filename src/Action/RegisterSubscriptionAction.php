@@ -47,7 +47,7 @@ final class RegisterSubscriptionAction
         $manager->delete($subscription);
     }
 
-    public function __invoke(Request $request, UserInterface $user = null): Response
+    public function __invoke(Request $request, ?UserInterface $user = null): Response
     {
         if (null === $user) {
             throw new AccessDeniedHttpException('Not authenticated.');
