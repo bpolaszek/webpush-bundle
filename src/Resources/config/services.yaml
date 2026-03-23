@@ -1,0 +1,29 @@
+services:
+  BenTools\WebPushBundle\Command\WebPushGenerateKeysCommand:
+    tags:
+      - { name: console.command }
+
+  BenTools\WebPushBundle\Twig\WebPushTwigExtension:
+    arguments:
+      - '%bentools_webpush.vapid_public_key%'
+    tags:
+      - { name: twig.extension }
+
+  BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry: ~
+
+  BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerInterface:
+    alias: BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry
+
+  BenTools\WebPushBundle\Action\RegisterSubscriptionAction:
+    public: true
+    arguments:
+      - '@BenTools\WebPushBundle\Model\Subscription\UserSubscriptionManagerRegistry'
+    tags:
+      - { name: controller.service_arguments }
+
+  BenTools\WebPushBundle\Sender\PushMessageSender:
+    arguments:
+      - VAPID:
+          subject: '%bentools_webpush.vapid_subject%'
+          publicKey: '%bentools_webpush.vapid_public_key%'
+          privateKey: '%bentools_webpush.vapid_private_key%'

@@ -4,7 +4,7 @@ namespace BenTools\WebPushBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -25,8 +25,8 @@ class WebPushExtension extends Extension
         $container->setParameter('bentools_webpush.vapid_subject', $config['settings']['subject'] ?? $container->getParameter('router.request_context.host'));
         $container->setParameter('bentools_webpush.vapid_public_key', $config['settings']['public_key'] ?? null);
         $container->setParameter('bentools_webpush.vapid_private_key', $config['settings']['private_key'] ?? null);
-        $loader = new XmlFileLoader($container, new FileLocator([__DIR__.'/../Resources/config/']));
-        $loader->load('services.xml');
+        $loader = new YamlFileLoader($container, new FileLocator([__DIR__.'/../Resources/config/']));
+        $loader->load('services.yaml');
     }
 
     /**

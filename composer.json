@@ -17,6 +17,7 @@
         "ext-openssl": "*",
         "guzzlehttp/guzzle": "^6.5.8 || ^7.4",
         "minishlink/web-push": "^6.0.7 || ^7.0 || ^8.0 || ^9.0",
+        "symfony/yaml": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/http-kernel": "^5.4.20 || ^6.0 || ^7.0 || ^8.0"
     },
     "require-dev": {
@@ -30,7 +31,6 @@
         "symfony/routing": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/security-core": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "symfony/var-dumper": "^5.4 || ^6.0 || ^7.0 || ^8.0",
-        "symfony/yaml": "^5.4 || ^6.0 || ^7.0 || ^8.0",
         "twig/twig": "^2.0 || ^3.0"
     },
     "autoload": {
