@@ -1,0 +1,5 @@
+bentools_webpush.subscription:
+  path: /
+  methods: [POST, DELETE]
+  defaults:
+    _controller: BenTools\WebPushBundle\Action\RegisterSubscriptionAction

@@ -22,7 +22,7 @@ Note that Apple requires the subject to be an URL or a mailto URL.
 # app/config/routing.yml (SF3)
 # config/routing.yaml (SF4)
 bentools_webpush:
-    resource: '@WebPushBundle/Resources/config/routing.xml'
+    resource: '@WebPushBundle/Resources/config/routing.yaml'
     prefix: /webpush
 ```
 
