@@ -5,18 +5,22 @@ namespace BenTools\WebPushBundle\DependencyInjection;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-/**
- * This is the class that loads and manages your bundle configuration.
- *
- * @see http://symfony.com/doc/current/cookbook/bundles/extension.html
- */
-class WebPushExtension extends Extension
+// \Symfony\Component\HttpKernel\DependencyInjection\Extension deprecated as of Symfony 8.0+
+if (class_exists(\Symfony\Component\DependencyInjection\Extension\Extension::class)) {
+    abstract class BaseExtension extends \Symfony\Component\DependencyInjection\Extension\Extension
+    {
+
+    }
+} else {
+    abstract class BaseExtension extends \Symfony\Component\HttpKernel\DependencyInjection\Extension
+    {
+
+    }
+}
+
+class WebPushExtension extends BaseExtension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
@@ -29,9 +33,6 @@ class WebPushExtension extends Extension
         $loader->load('services.yaml');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAlias(): string
     {
         return 'bentools_webpush';
